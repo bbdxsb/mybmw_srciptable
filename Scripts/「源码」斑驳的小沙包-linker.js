@@ -22,8 +22,8 @@ let BMW_SERVER_HOST = 'https://myprofile.bmw.com.cn';
 let APP_HOST_SERVER = 'https://bmw-linker.yocky.cn';
 let JS_CDN_SERVER = 'https://cdn.jsdelivr.net/gh/opp100/bmw-scriptable-widgets/lib';
 
-let DEFAULT_BG_COLOR_LIGHT = '#FFFFFF';
-let DEFAULT_BG_COLOR_DARK = '#2B2B2B';
+let DEFAULT_BG_COLOR_LIGHT = '#cc3399';
+let DEFAULT_BG_COLOR_DARK = '#0099ff';
 let DEFAULT_LOGO_LIGHT = 'https://z3.ax1x.com/2021/11/16/IRfMQO.png';
 let DEFAULT_FG_COLOR = '#111111';
 let DEFAULT_FG_COLOR_OPTICAL = '0.1';
@@ -245,7 +245,7 @@ class Widget extends Base {
         msgText.textColor = fontColor
         msgText.minimumScaleFactor = 0.8
         //车型图片  
-        leftBox.addSpacer(8)
+        leftBox.addSpacer(null)
         //let imageCar = await this.getVehicleImage(data);
         let imageCar = await this.getCarCanvasImage(data, boxWidth, boxHeight * 0.55);
         let carImageBox = leftBox.addStack()
@@ -282,7 +282,7 @@ class Widget extends Base {
         const oilIcon = oilIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/02/IPHyLt.png'))
         oilIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         let fuelPercentage = this.getOilPercent(data)
-        oilInfoBox.addSpacer(2)
+        oilInfoBox.addSpacer(4)
         const oilPercentTxt = oilInfoBox.addText(`${fuelPercentage}%`)
         oilPercentTxt.font = this.provideFont('medium', FONNT_SIZE)
         oilPercentTxt.textOpacity = 1
@@ -786,13 +786,13 @@ class Widget extends Base {
     appColorData = {
         light: {
             startColor: DEFAULT_BG_COLOR_LIGHT,
-            endColor: DEFAULT_BG_COLOR_LIGHT,
-            fontColor: DEFAULT_BG_COLOR_DARK,
+            endColor: DEFAULT_BG_COLOR_DARK,
+            fontColor: DEFAULT_BG_COLOR_LIGHT,
             fgColor: DEFAULT_FG_COLOR,
             fgOptical: DEFAULT_FG_COLOR_OPTICAL
         },
         dark: {
-            startColor: DEFAULT_BG_COLOR_DARK,
+            startColor: DEFAULT_BG_COLOR_LIGHT,
             endColor: DEFAULT_BG_COLOR_DARK,
             fontColor: DEFAULT_BG_COLOR_LIGHT,
             fgColor: DEFAULT_FG_COLOR,
@@ -1337,7 +1337,7 @@ class Widget extends Base {
         let canvas = new DrawContext();
         canvas.size = new Size(canvasWidth, canvasHeight);
         canvas.opaque = false;
-        canvas.setFont(this.provideFont('black', Math.round(canvasHeight / 4.7)));
+        canvas.setFont(this.provideFont('black', Math.round(canvasHeight / 4.5)));
         canvas.setTextColor(this.getFontColor());
         canvas.respectScreenScale = true;
 
@@ -1347,7 +1347,7 @@ class Widget extends Base {
                 canvas.drawTextInRect(
                     'ALL',
                     new Rect(
-                        0, //
+                        canvasWidth *0.05, //
                         0,
                         Math.round(canvasWidth * 0.5),
                         Math.round(canvasWidth * 0.5)
@@ -1356,8 +1356,8 @@ class Widget extends Base {
                 canvas.drawTextInRect(
                     'GOOD',
                     new Rect(
-                        0,
-                        Math.round(canvasHeight / 4.7),
+                        canvasWidth *0.05,
+                        Math.round(canvasHeight / 4.5),
                         Math.round(canvasWidth * 0.5),
                         Math.round(canvasWidth * 0.5)
                     )
@@ -1402,26 +1402,26 @@ class Widget extends Base {
         canvas.drawImageInRect(
             carImage,
             new Rect(
-                canvasWidth - imageSize.width * 0.95,
-                canvasHeight - imageSize.height * 0.95,
-                imageSize.width * 0.95,
-                imageSize.height * 0.95
+                (canvasWidth - imageSize.width)/2,
+                canvasHeight - imageSize.height,
+                imageSize.width,
+                imageSize.height
             )
         );
         return canvas.getImage();
     }
 
-    getImageSize(imageWidth, imageHeight, canvasWidth, canvasHeight, resizeRate = 0.95) {
+    getImageSize(imageWidth, imageHeight, canvasWidth, canvasHeight, resizeRate = 0.9) {
 
         let a = canvasWidth;
         let b = canvasWidth / imageWidth * imageHeight;
         console.log('imageWidth:' + a + ',imageHeight:' + b)
         console.log('canvasWidth:' + canvasWidth + ',canvasHeight:' + canvasHeight)
         if (resizeRate >= 1) {
-            resizeRate = 0.95;
+            resizeRate = 0.9;
         }
         while (true) {
-            if (a > canvasWidth || b > canvasHeight) {
+            if (a >= canvasWidth || b >= canvasHeight) {
                 console.warn(`resizeRate:${resizeRate}`);
                 a = resizeRate * a;
                 b = resizeRate * b;
@@ -1437,10 +1437,10 @@ class Widget extends Base {
     //地图
     async loadMapView(latLng, width, height) {
         try {
-            width = parseInt(width * 1.3);
-            height = parseInt(height * 1.3);
+            width = parseInt(width * 1.5);
+            height = parseInt(height * 1.5);
             let url = `https://restapi.amap.com/v3/staticmap?location=${latLng}&scale=2&zoom=14&size=${width}*${height}&traffic=1&markers=large,0x0099FF,:${latLng}&key=${MAPAPIKEY}`;
-            const img = await this.getImageByUrl(url)
+            const img = await this.getImageByUrl(url,false)
             return img;
         } catch (e) {
             console.log('load map failed');
