@@ -932,13 +932,13 @@ class Widget extends Base {
         //油位
         const rangeBox = headBox.addStack()
         rangeBox.bottomAlignContent()
-
+        rangeBox.setPadding(0,4,0,2)
         //百分比
         let fuelPercentage = this.getOilPercent(data)
         const oilPercentTxt = rangeBox.addText(`${fuelPercentage}`)
-        oilPercentTxt.font = this.provideFont('bold', 26)
+        oilPercentTxt.font = this.provideFont('bold', 24)
         oilPercentTxt.textColor = fontColor
-        oilPercentTxt.minimumScaleFactor = 0.7
+        oilPercentTxt.minimumScaleFactor = 0.8
         oilPercentTxt.lineLimit = 1
         //%
         const percentageBox = rangeBox.addStack();
@@ -949,9 +949,9 @@ class Widget extends Base {
         percentageText.lineLimit = 1
         //续航里程
         const rangeValueText = rangeBox.addText(rangeValue)
-        rangeValueText.font = this.provideFont('bold', 26)
+        rangeValueText.font = this.provideFont('bold', 24)
         rangeValueText.textColor = fontColor
-        rangeValueText.minimumScaleFactor = 0.7
+        rangeValueText.minimumScaleFactor = 0.8
         rangeValueText.lineLimit = 1
         //km
         const rangeUnitsBox = rangeBox.addStack();
@@ -963,7 +963,7 @@ class Widget extends Base {
 
         //车型图片  
         box.addSpacer(null)
-        let imageCar = await this.getCarCanvasImage(data, width - padding * 2, (height - padding * 2) * 0.5);
+        let imageCar = await this.getCarCanvasImage(data, width , (height - padding * 2) * 0.58);
         box.addImage(imageCar)
 
         //车型名称
@@ -1050,7 +1050,7 @@ class Widget extends Base {
         //车型图片  
         leftBox.addSpacer(null)
         //let imageCar = await this.getVehicleImage(data);
-        let imageCar = await this.getCarCanvasImage(data, boxWidth, boxHeight * 0.55);
+        let imageCar = await this.getCarCanvasImage(data, boxWidth, boxHeight * 0.6);
         let carImageBox = leftBox.addStack()
         carImageBox.size = new Size(boxWidth - padding * 2, 0)
         let carImage = carImageBox.addImage(imageCar)
@@ -2037,7 +2037,7 @@ class Widget extends Base {
         return Color.dynamic(new Color('#2B2B2B', 1), Color.white());
     }
 
-    getBackgroundColor(isflip = false) {
+    getBackgroundColor() {
         const bgColor = new LinearGradient();
         let startColor = Color.dynamic(new Color(DEFAULT_BG_COLOR_LIGHT, 1), new Color(DEFAULT_BG_COLOR_DARK, 1));
         let endColor = Color.dynamic(new Color(DEFAULT_BG_COLOR_LIGHT, 1), new Color(DEFAULT_BG_COLOR_DARK, 1));
@@ -2065,15 +2065,12 @@ class Widget extends Base {
         } catch (e) {
             console.error(e.message);
         }
-        if (isflip) {
-            bgColor.colors = [endColor, startColor];
-        }
-        else {
-            bgColor.colors = [startColor, endColor];
-        }
+
+        bgColor.colors = [startColor, endColor];
+
         bgColor.locations = [0.0, 1.0];
-        bgColor.startPoint = new Point(0.8, 0.2)
-        bgColor.endPoint = new Point(0.2, 0.8)
+        bgColor.startPoint = new Point(1, 0.5)
+        bgColor.endPoint = new Point(0, 0)
         return bgColor;
     }
 
@@ -2150,7 +2147,7 @@ class Widget extends Base {
                 canvas.drawTextInRect(
                     'ALL',
                     new Rect(
-                        canvasWidth *0.05, //
+                        canvasWidth * 0.05, //
                         0,
                         Math.round(canvasWidth * 0.5),
                         Math.round(canvasWidth * 0.5)
@@ -2159,7 +2156,7 @@ class Widget extends Base {
                 canvas.drawTextInRect(
                     'GOOD',
                     new Rect(
-                        canvasWidth *0.05,
+                        canvasWidth * 0.05,
                         Math.round(canvasHeight / 4.5),
                         Math.round(canvasWidth * 0.5),
                         Math.round(canvasWidth * 0.5)
@@ -2214,14 +2211,13 @@ class Widget extends Base {
         return canvas.getImage();
     }
 
-    getImageSize(imageWidth, imageHeight, canvasWidth, canvasHeight, resizeRate = 0.9) {
-
+    getImageSize(imageWidth, imageHeight, canvasWidth, canvasHeight, resizeRate = 0.96) {
         let a = canvasWidth;
         let b = canvasWidth / imageWidth * imageHeight;
         console.log('imageWidth:' + a + ',imageHeight:' + b)
         console.log('canvasWidth:' + canvasWidth + ',canvasHeight:' + canvasHeight)
         if (resizeRate >= 1) {
-            resizeRate = 0.9;
+            resizeRate = 0.96;
         }
         while (true) {
             if (a >= canvasWidth || b >= canvasHeight) {
@@ -2243,7 +2239,7 @@ class Widget extends Base {
             width = parseInt(width * 1.5);
             height = parseInt(height * 1.5);
             let url = `https://restapi.amap.com/v3/staticmap?location=${latLng}&scale=2&zoom=14&size=${width}*${height}&traffic=1&markers=large,0x0099FF,:${latLng}&key=${MAPAPIKEY}`;
-            const img = await this.getImageByUrl(url,false)
+            const img = await this.getImageByUrl(url, false)
             return img;
         } catch (e) {
             console.log('load map failed');
