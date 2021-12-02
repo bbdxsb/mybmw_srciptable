@@ -26,7 +26,7 @@ let DEFAULT_BG_COLOR_LIGHT = '#cc3399';
 let DEFAULT_BG_COLOR_DARK = '#0099ff';
 let DEFAULT_LOGO_LIGHT = 'https://z3.ax1x.com/2021/11/16/IRfMQO.png';
 let DEFAULT_FG_COLOR = '#111111';
-let DEFAULT_FG_COLOR_OPTICAL = '0.1';
+let DEFAULT_FG_COLOR_OPTICAL = '0.15';
 let MAPAPIKEY = '1b96b24cade3b58737ef6b5e142cb8c3';
 let WEATHERKEY = '6LBqE0F459FuHgIq'
 // header is might be used for preventing the bmw block the external api?
@@ -111,7 +111,7 @@ class Widget extends Base {
     async renderSmall(data) {
         let w = new ListWidget();
         this.BG_FILE = this.getBackgroundImage('small')
-        const padding = 6
+        const padding = 8
         const { width, height } = data.size['small'];
         const box = w.addStack()
         box.size = new Size(width, height)
@@ -129,7 +129,7 @@ class Widget extends Base {
         //油位
         const rangeBox = headBox.addStack()
         rangeBox.bottomAlignContent()
-        rangeBox.setPadding(0,4,0,2)
+        rangeBox.setPadding(0, 2, 0, 0)
         //百分比
         let fuelPercentage = this.getOilPercent(data)
         const oilPercentTxt = rangeBox.addText(`${fuelPercentage}`)
@@ -137,6 +137,7 @@ class Widget extends Base {
         oilPercentTxt.textColor = fontColor
         oilPercentTxt.minimumScaleFactor = 0.8
         oilPercentTxt.lineLimit = 1
+        this.addFontShadow(oilPercentTxt)
         //%
         const percentageBox = rangeBox.addStack();
         percentageBox.setPadding(0, 0, 3, 0)
@@ -144,12 +145,14 @@ class Widget extends Base {
         percentageText.font = this.provideFont('regular', 13)
         percentageText.textColor = fontColor
         percentageText.lineLimit = 1
+        this.addFontShadow(percentageText)
         //续航里程
         const rangeValueText = rangeBox.addText(rangeValue)
         rangeValueText.font = this.provideFont('bold', 24)
         rangeValueText.textColor = fontColor
         rangeValueText.minimumScaleFactor = 0.8
         rangeValueText.lineLimit = 1
+        this.addFontShadow(rangeValueText)
         //km
         const rangeUnitsBox = rangeBox.addStack();
         rangeUnitsBox.setPadding(0, 0, 3, 0)
@@ -157,10 +160,11 @@ class Widget extends Base {
         rangeUnitsText.font = this.provideFont('regular', 13)
         rangeUnitsText.textColor = fontColor
         rangeUnitsText.lineLimit = 1
+        this.addFontShadow(rangeUnitsText)
 
         //车型图片  
         box.addSpacer(null)
-        let imageCar = await this.getCarCanvasImage(data, width , (height - padding * 2) * 0.58);
+        let imageCar = await this.getCarCanvasImage(data, width, (height - padding * 2) * 0.58);
         box.addImage(imageCar)
 
         //车型名称
@@ -177,6 +181,7 @@ class Widget extends Base {
         carNameText.textColor = fontColor
         carNameText.minimumScaleFactor = 0.5
         carNameText.lineLimit = 1
+        this.addFontShadow(carNameText)
         w.url = 'de.bmw.connected.mobile20.cn.Share-Ext.Destination://'
         return w;
     }
@@ -184,7 +189,7 @@ class Widget extends Base {
 
     //#region  中组件-信息
     async renderMedium(data) {
-        const padding = 6
+        const padding = 8
         let w = new ListWidget()
         const { width, height } = data.size['medium'];
         this.BG_FILE = this.getBackgroundImage('medium')
@@ -244,14 +249,25 @@ class Widget extends Base {
         msgText.font = this.provideFont('medium', FONNT_SIZE)
         msgText.textColor = fontColor
         msgText.minimumScaleFactor = 0.8
+        this.addFontShadow(msgText)
         //车型图片  
-        leftBox.addSpacer(null)
+        if (isLarge) {
+            leftBox.addSpacer(null)
+        }
+        else {
+            leftBox.addSpacer(4)
+        }
         //let imageCar = await this.getVehicleImage(data);
         let imageCar = await this.getCarCanvasImage(data, boxWidth, boxHeight * 0.6);
         let carImageBox = leftBox.addStack()
         carImageBox.size = new Size(boxWidth - padding * 2, 0)
         let carImage = carImageBox.addImage(imageCar)
-        leftBox.addSpacer(null)
+        if (isLarge) {
+            leftBox.addSpacer(null)
+        }
+        else {
+            leftBox.addSpacer(4)
+        }
         //车型名称
         let carName = `${data.brand} ${data.bodyType} ${data.model}`
         if (this.userConfigData.custom_name.length > 0) {
@@ -265,7 +281,7 @@ class Widget extends Base {
         carNameText.textColor = fontColor
         carNameText.minimumScaleFactor = 0.5
         carNameText.lineLimit = 1
-
+        this.addFontShadow(carNameText)
         //右边
         const carInfoBox = rightBox.addStack()
         carInfoBox.setPadding(padding, padding, 0, padding)
@@ -279,13 +295,13 @@ class Widget extends Base {
         oilInfoBox.centerAlignContent()
         const oilIconBox = oilInfoBox.addStack()
         oilIconBox.size = new Size(LOGO_SIZE, LOGO_SIZE)
+        oilIconBox.setPadding(2, 0, 2, 4)
         const oilIcon = oilIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/02/IPHyLt.png'))
         oilIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         let fuelPercentage = this.getOilPercent(data)
-        oilInfoBox.addSpacer(4)
         const oilPercentTxt = oilInfoBox.addText(`${fuelPercentage}%`)
-        oilPercentTxt.font = this.provideFont('medium', FONNT_SIZE)
-        oilPercentTxt.textOpacity = 1
+        oilPercentTxt.font = this.provideFont('medium', 12)
+        this.addFontShadow(oilPercentTxt)
         oilInfoBox.addSpacer(null)
         if (rangeValue <= REMAIL_OIL_KM) {
             oilIcon.tintColor = new Color('#ff0000', 1)
@@ -299,8 +315,9 @@ class Widget extends Base {
         //更新时间
         oilInfoBox.addSpacer(null)
         const updateTxt = oilInfoBox.addText(this.formatDate(data))
-        updateTxt.font = this.provideFont('medium', FONNT_SIZE)
+        updateTxt.font = this.provideFont('medium', 12)
         updateTxt.textColor = fontColor
+        this.addFontShadow(updateTxt)
         const updateIcon = await this.getImageByUrl('https://z3.ax1x.com/2021/11/27/omF4Bt.png')
         const updateIconBox = oilInfoBox.addStack()
         updateIconBox.size = new Size(LOGO_SIZE, LOGO_SIZE)
@@ -346,7 +363,7 @@ class Widget extends Base {
         remainOilProcessBox.size = new Size(allLength * (fuelPercentage / 100), 12)
         remainOilProcessBox.cornerRadius = 6
         processBarBox.addSpacer(null)
-        processBarBox.backgroundColor = new Color('#000000', 0.1)
+        processBarBox.backgroundColor = new Color('#111111', 0.2)
         processBarBox.cornerRadius = 6
         carInfoBox.addSpacer(null)
 
@@ -356,8 +373,8 @@ class Widget extends Base {
         rangeBox.bottomAlignContent()
         const rangeIconBox = rangeBox.addStack();
         rangeIconBox.centerAlignContent()
-        rangeIconBox.size = new Size(22, 22 + padding)
-        rangeIconBox.setPadding(0, 0, padding, 0)
+        rangeIconBox.size = new Size(22, 26)
+        rangeIconBox.setPadding(0, 0, 4, 0)
         const rangeIcon = rangeIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/02/IPbt6s.png'))
         rangeIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         rangeIcon.tintColor = fontColor
@@ -367,13 +384,15 @@ class Widget extends Base {
         rangeValueTxt.font = this.provideFont('black', 50)
         rangeValueTxt.textColor = fontColor
         rangeValueTxt.minimumScaleFactor = 0.7
+        this.addFontShadow(rangeValueTxt)
         rangeBox.addSpacer(4)
         const rangeUnitsBox = rangeBox.addStack();
-        rangeUnitsBox.setPadding(0, 0, padding, 0)
+        rangeUnitsBox.setPadding(0, 0, 4, 0)
         const rangeUnitsTxt = rangeUnitsBox.addText(rangeUnits)
         rangeUnitsTxt.font = this.provideFont('bold', FONNT_SIZE)
         rangeUnitsTxt.textColor = fontColor
         rangeUnitsTxt.minimumScaleFactor = 0.8
+        this.addFontShadow(rangeUnitsTxt)
         rightBox.addSpacer(padding)
 
         //总里程
@@ -385,6 +404,7 @@ class Widget extends Base {
         const allMileageTxt = otherInfoBox.addText(`总里程：${data.status.currentMileage.mileage} ${data.status.currentMileage.units}`)
         allMileageTxt.font = this.provideFont('medium', FONNT_SIZE)
         allMileageTxt.textColor = fontColor
+        this.addFontShadow(allMileageTxt)
         otherInfoBox.addSpacer(null)
         allMileageTxt.minimumScaleFactor = 0.8
         allMileageTxt.lineLimit = 1
@@ -456,7 +476,7 @@ class Widget extends Base {
             mapBox.addSpacer(null)
             const bottomBox = mapBox.addStack();
             bottomBox.backgroundColor = mapBackgroundColor
-            bottomBox.setPadding(2, 2, 0, 2)
+            bottomBox.setPadding(3, 2, 0, 2)
             bottomBox.size = new Size(boxWidth, 16)
             let alertIfno = weatherData.weatherDesc
             if (weatherData.alertWeatherTitle) {
@@ -465,14 +485,14 @@ class Widget extends Base {
             const alertIfnoText = bottomBox.addText(alertIfno)
             alertIfnoText.font = this.provideFont('bold', 12)
             alertIfnoText.textColor = mapFontColor
-            alertIfnoText.minimumScaleFactor = 0.4
+            alertIfnoText.minimumScaleFactor = 0.6
         }
 
         //车辆位置
         const addressInfoBox = rightBox.addStack()
         addressInfoBox.Size = new Size(0, boxHeight / 2 - padding / 2)
         addressInfoBox.layoutVertically()
-        addressInfoBox.setPadding(padding, padding, padding, padding)
+        addressInfoBox.setPadding(padding/2, padding, padding/2, padding)
         addressInfoBox.backgroundColor = BACK_COLOR
         addressInfoBox.cornerRadius = CORRER_RADIUS
         addressInfoBox.url = this.buildMapURL(longitude, latitude, data.properties.vehicleLocation.address.formatted)
@@ -487,11 +507,14 @@ class Widget extends Base {
         const locationText = locationBox.addText(`定位`)
         locationText.font = this.provideFont('heavy', FONNT_SIZE)
         locationText.textColor = fontColor
+        this.addFontShadow(locationText)
         locationBox.addSpacer(null)
+        locationBox.centerAlignContent()
         if (weatherData) {
             const temperatureText = locationBox.addText(`${weatherData.temperature}℃`)
-            temperatureText.font = this.provideFont('medium', FONNT_SIZE)
+            temperatureText.font = this.provideFont('medium', 12)
             temperatureText.textColor = fontColor
+            this.addFontShadow(temperatureText)
             // const thermometerImageBox = locationBox.addStack()
             // thermometerImageBox.size = new Size(LOGO_SIZE, LOGO_SIZE)
             // const thermometerImage = thermometerImageBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/23/oS0rCV.png'))
@@ -504,6 +527,7 @@ class Widget extends Base {
         addressBoxTxt.font = this.provideFont('medium', 12)
         addressBoxTxt.textColor = fontColor
         addressBoxTxt.line = 2
+        this.addFontShadow(addressBoxTxt)
 
         //导航计算
         let plate = data.licensePlate
@@ -581,7 +605,7 @@ class Widget extends Base {
         pathBox.url = url;
         pathBox.Size = new Size(0, boxHeight / 2 - padding / 2)
         pathBox.layoutVertically()
-        pathBox.setPadding(padding, padding, padding, padding)
+        pathBox.setPadding(padding/2, padding, padding/2, padding)
         pathBox.backgroundColor = BACK_COLOR
         pathBox.cornerRadius = CORRER_RADIUS
 
@@ -599,6 +623,7 @@ class Widget extends Base {
         const textText = titleBox.addText(text)
         textText.font = this.provideFont('heavy', FONNT_SIZE)
         textText.textColor = fontColor
+        this.addFontShadow(textText)
         titleBox.addSpacer(null)
         // //降雨概率
         // if (weatherData) {
@@ -628,10 +653,11 @@ class Widget extends Base {
             timeStr = `${parseInt((duration / 60).toString())} min`
         }
         const durationText = durationBox.addText(timeStr)
-        durationText.font = this.provideFont('medium', FONNT_SIZE)
+        durationText.font = this.provideFont('medium', 12)
         durationText.textColor = fontColor
         durationText.minimumScaleFactor = 0.8
-
+        this.addFontShadow(durationText)
+        titleBox.centerAlignContent()
         //下部内容
         const bottomBox = pathBox.addStack();
         bottomBox.layoutHorizontally()
@@ -645,33 +671,38 @@ class Widget extends Base {
         distanceBox.addSpacer(2)
         const distanceIconBox = distanceBox.addStack()
         distanceIconBox.size = new Size(FONNT_SIZE, FONNT_SIZE)
+        distanceIconBox.setPadding(0,0,1,0)
         const distanceImage = distanceIconBox.addImage(await this.getImageByUrl(`https://z3.ax1x.com/2021/11/21/IjesH0.png`))
         distanceImage.tintColor = fontColor
         distanceBox.addSpacer(8)
         const distanceText1 = distanceBox.addText(`路线距离`)
         distanceText1.font = this.provideFont('medium', 12)
         distanceText1.textColor = fontColor
+        this.addFontShadow(distanceText1)
         distanceBox.addSpacer(null)
         const distanceText2 = distanceBox.addText(`${(distance / 1000).toFixed(1)} km`)
         distanceText2.font = this.provideFont('medium', 12)
         distanceText2.textColor = fontColor
-
+        this.addFontShadow(distanceText2)
         //更新时间
         messageBox.addSpacer(2)
         const updateBox = messageBox.addStack()
         updateBox.addSpacer(2)
         const updateIconBox = updateBox.addStack()
         updateIconBox.size = new Size(FONNT_SIZE, FONNT_SIZE)
+        updateIconBox.setPadding(1,0,1,0)
         const updateImage = updateIconBox.addImage(await this.getImageByUrl(`https://z3.ax1x.com/2021/11/21/IjkWIe.png`))
         updateImage.tintColor = fontColor
         updateBox.addSpacer(8)
         const updateText1 = updateBox.addText(`更新时间`)
         updateText1.font = this.provideFont('medium', 12)
         updateText1.textColor = fontColor
+        this.addFontShadow(updateText1)
         updateBox.addSpacer(null)
         const updateText2 = updateBox.addText(this.formatDate())
         updateText2.font = this.provideFont('medium', 12)
         updateText2.textColor = fontColor
+        this.addFontShadow(updateText2)
         return box
     }
     //#endregion
@@ -681,7 +712,7 @@ class Widget extends Base {
     async renderLarge(data) {
         let w = new ListWidget()
         this.BG_FILE = this.getBackgroundImage('large')
-        const padding = 6
+        const padding = 8
         const { width, height } = data.size['large'];
         let fontColor = this.getFontColor()
         //上部
@@ -697,6 +728,8 @@ class Widget extends Base {
     //#endregion
 
     //#endregion
+
+   
 
     WeatherIcos = {
         CLEAR_DAY: 'sun.max.fill', // 晴（白天） CLEAR_DAY 
@@ -948,6 +981,13 @@ class Widget extends Base {
         }
 
         return mobileStr;
+    }
+
+    addFontShadow(text)
+    {
+        text.shadowColor = new Color('#111111',1)
+        text.shadowRadius = 1
+        text.shadowOffset = new Point(1,1)
     }
 
     async getDependencies() {
@@ -1334,7 +1374,7 @@ class Widget extends Base {
         let canvas = new DrawContext();
         canvas.size = new Size(canvasWidth, canvasHeight);
         canvas.opaque = false;
-        canvas.setFont(this.provideFont('black', Math.round(canvasHeight / 4.5)));
+        canvas.setFont(this.provideFont('heavy', Math.round(canvasHeight / 4.5)));
         canvas.setTextColor(this.getFontColor());
         canvas.respectScreenScale = true;
 
@@ -1399,7 +1439,7 @@ class Widget extends Base {
         canvas.drawImageInRect(
             carImage,
             new Rect(
-                (canvasWidth - imageSize.width)/2,
+                (canvasWidth - imageSize.width) / 2,
                 canvasHeight - imageSize.height,
                 imageSize.width,
                 imageSize.height
