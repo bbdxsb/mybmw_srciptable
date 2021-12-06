@@ -822,7 +822,6 @@ let DEPENDENCIES = [
 
 
 let BMW_SERVER_HOST = 'https://myprofile.bmw.com.cn';
-let APP_HOST_SERVER = 'https://bmw-linker.yocky.cn';
 let JS_CDN_SERVER = 'https://cdn.jsdelivr.net/gh/opp100/bmw-scriptable-widgets/lib';
 
 let DEFAULT_BG_COLOR_LIGHT = '#cc3399';
@@ -883,19 +882,23 @@ class Widget extends Base {
                 await this.renderError('显示错误：' + e.message);
             }
             let w = new ListWidget();
+          let  img
             switch (this.widgetFamily) {
                 case 'large':
                     w = await this.renderLarge(data);
+                    img = this.getBackgroundImage('large'); 
                     break;
                 case 'medium':
                     w = await this.renderMedium(data);
+                    img = this.getBackgroundImage('medium'); 
                     break;
                 default:
                     w = await this.renderSmall(data);
+                    img = this.getBackgroundImage('small'); 
                     break;
             }
-            if (this.BG_FILE) {
-                w.backgroundImage = this.BG_FILE
+            if (img) {
+                w.backgroundImage = img
             }
             else if (this.userConfigData.bgImageMid) {
                 let bgImageUrl = this.userConfigData.bgImageMid;
@@ -913,7 +916,6 @@ class Widget extends Base {
     //#region  小组件
     async renderSmall(data) {
         let w = new ListWidget();
-        this.BG_FILE = this.getBackgroundImage('small')
         const padding = 8
         const { width, height } = data.size['small'];
         const box = w.addStack()
@@ -966,12 +968,12 @@ class Widget extends Base {
         this.addFontShadow(rangeUnitsText)
 
         //车型图片  
-        box.addSpacer(null)
-        let imageCar = await this.getCarCanvasImage(data, width, (height - padding * 2) * 0.58);
+        box.addSpacer(2)
+        let imageCar = await this.getCarCanvasImage(data, width - padding*2, (height - padding * 2) * 0.6); 
         box.addImage(imageCar)
 
         //车型名称
-        box.addSpacer(null)
+        box.addSpacer(2)
         let carName = `${data.brand} ${data.bodyType} ${data.model}`
         if (this.userConfigData.custom_name.length > 0) {
             carName = this.userConfigData.custom_name
@@ -995,7 +997,6 @@ class Widget extends Base {
         const padding = 8
         let w = new ListWidget()
         const { width, height } = data.size['medium'];
-        this.BG_FILE = this.getBackgroundImage('medium')
         w.setPadding(padding, padding, padding, padding)
         let fontColor = this.getFontColor()
         let mainBox = w.addStack()
@@ -1026,7 +1027,7 @@ class Widget extends Base {
         rightBox.size = new Size(boxWidth, boxHeight)
         rightBox.layoutVertically()
 
-        leftBox.setPadding(padding, padding, padding, padding)
+        leftBox.setPadding(padding/2, padding /2, padding/2, padding/2)
         leftBox.cornerRadius = CORRER_RADIUS
         leftBox.backgroundColor = BACK_COLOR
         leftBox.layoutVertically()
@@ -1039,6 +1040,7 @@ class Widget extends Base {
         if (!this.userConfigData.custom_logo_image) {
             logoImage.tintColor = this.getFontColor()
         }
+        logoBox.centerAlignContent()
         logoBox.addSpacer(null)
         headBox.addSpacer(null)
 
@@ -1057,18 +1059,20 @@ class Widget extends Base {
         if (isLarge) {
             leftBox.addSpacer(null)
         }
-        else {
+        else
+        {
             leftBox.addSpacer(4)
         }
         //let imageCar = await this.getVehicleImage(data);
-        let imageCar = await this.getCarCanvasImage(data, boxWidth, boxHeight * 0.6);
+        let imageCar = await this.getCarCanvasImage(data, boxWidth - padding, boxHeight* 0.62);
         let carImageBox = leftBox.addStack()
-        carImageBox.size = new Size(boxWidth - padding * 2, 0)
+        carImageBox.size = new Size(boxWidth - padding , 0)
         let carImage = carImageBox.addImage(imageCar)
         if (isLarge) {
             leftBox.addSpacer(null)
         }
-        else {
+        else
+        {
             leftBox.addSpacer(4)
         }
         //车型名称
@@ -1080,14 +1084,14 @@ class Widget extends Base {
         carNameBox.addSpacer(null)
         const carNameText = carNameBox.addText(carName)
         carNameBox.addSpacer(null)
-        carNameText.font = this.provideFont('black', 24)
+        carNameText.font = this.provideFont('black', 22)
         carNameText.textColor = fontColor
         carNameText.minimumScaleFactor = 0.5
         carNameText.lineLimit = 1
         this.addFontShadow(carNameText)
         //右边
         const carInfoBox = rightBox.addStack()
-        carInfoBox.setPadding(padding, padding, 0, padding)
+        carInfoBox.setPadding(padding/2, padding/2, 0, padding/2)
         carInfoBox.cornerRadius = CORRER_RADIUS
         carInfoBox.backgroundColor = BACK_COLOR
         carInfoBox.layoutVertically()
@@ -1159,7 +1163,7 @@ class Widget extends Base {
         //进度条
         oilBox.addSpacer(8)
         const processBarBox = oilBox.addStack()
-        const allLength = width / 2 - padding * 1.5 - padding * 2
+        const allLength = width / 2 - padding * 1.5 - padding 
         processBarBox.size = new Size(allLength, 0)
         const remainOilProcessBox = processBarBox.addStack()
         remainOilProcessBox.backgroundColor = fontColor
@@ -1200,7 +1204,7 @@ class Widget extends Base {
 
         //总里程
         const otherInfoBox = rightBox.addStack()
-        otherInfoBox.setPadding(padding + 2, 2, padding + 2, 2)
+        otherInfoBox.setPadding(padding , padding /2, padding, padding /2)
         otherInfoBox.cornerRadius = CORRER_RADIUS
         otherInfoBox.backgroundColor = BACK_COLOR
         otherInfoBox.addSpacer(null)
@@ -1295,16 +1299,16 @@ class Widget extends Base {
         const addressInfoBox = rightBox.addStack()
         addressInfoBox.Size = new Size(0, boxHeight / 2 - padding / 2)
         addressInfoBox.layoutVertically()
-        addressInfoBox.setPadding(padding/2, padding, padding/2, padding)
+        addressInfoBox.setPadding(padding/2, padding/2, padding/2, padding/2)
         addressInfoBox.backgroundColor = BACK_COLOR
         addressInfoBox.cornerRadius = CORRER_RADIUS
         addressInfoBox.url = this.buildMapURL(longitude, latitude, data.properties.vehicleLocation.address.formatted)
         //图标
         const locationBox = addressInfoBox.addStack()
-        locationBox.size = new Size(boxWidth - padding * 2, LOGO_SIZE)
+        locationBox.size = new Size(boxWidth - padding , LOGO_SIZE)
         const locationIconBox = locationBox.addStack()
         const locationIcon = locationIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/21/IjA8Fe.png'))
-        locationIconBox.addSpacer(8)
+        locationIconBox.addSpacer(padding/2)
         locationIcon.tintColor = fontColor
         locationIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         const locationText = locationBox.addText(`定位`)
@@ -1403,18 +1407,18 @@ class Widget extends Base {
         }
 
         //填充导航数据
-        rightBox.addSpacer(padding)
+        rightBox.addSpacer(padding/2)
         const pathBox = rightBox.addStack()
         pathBox.url = url;
         pathBox.Size = new Size(0, boxHeight / 2 - padding / 2)
         pathBox.layoutVertically()
-        pathBox.setPadding(padding/2, padding, padding/2, padding)
+        pathBox.setPadding(padding/2, padding/2, padding/2, padding/2)
         pathBox.backgroundColor = BACK_COLOR
         pathBox.cornerRadius = CORRER_RADIUS
 
         const titleBox = pathBox.addStack()
         titleBox.layoutHorizontally()
-        titleBox.size = new Size(boxWidth - padding * 2, LOGO_SIZE)
+        titleBox.size = new Size(boxWidth - padding , LOGO_SIZE)
         //图标
         const iconBox = titleBox.addStack()
         iconBox.size = new Size(LOGO_SIZE, LOGO_SIZE)
@@ -1422,7 +1426,7 @@ class Widget extends Base {
         carIcon.tintColor = fontColor
 
         //地址
-        titleBox.addSpacer(8)
+        titleBox.addSpacer(padding/2)
         const textText = titleBox.addText(text)
         textText.font = this.provideFont('heavy', FONNT_SIZE)
         textText.textColor = fontColor
@@ -1477,7 +1481,7 @@ class Widget extends Base {
         distanceIconBox.setPadding(0,0,1,0)
         const distanceImage = distanceIconBox.addImage(await this.getImageByUrl(`https://z3.ax1x.com/2021/11/21/IjesH0.png`))
         distanceImage.tintColor = fontColor
-        distanceBox.addSpacer(8)
+        distanceBox.addSpacer(padding/2+2)
         const distanceText1 = distanceBox.addText(`路线距离`)
         distanceText1.font = this.provideFont('medium', 12)
         distanceText1.textColor = fontColor
@@ -1496,7 +1500,7 @@ class Widget extends Base {
         updateIconBox.setPadding(1,0,1,0)
         const updateImage = updateIconBox.addImage(await this.getImageByUrl(`https://z3.ax1x.com/2021/11/21/IjkWIe.png`))
         updateImage.tintColor = fontColor
-        updateBox.addSpacer(8)
+        updateBox.addSpacer(padding/2+2)
         const updateText1 = updateBox.addText(`更新时间`)
         updateText1.font = this.provideFont('medium', 12)
         updateText1.textColor = fontColor
@@ -1514,7 +1518,6 @@ class Widget extends Base {
 
     async renderLarge(data) {
         let w = new ListWidget()
-        this.BG_FILE = this.getBackgroundImage('large')
         const padding = 8
         const { width, height } = data.size['large'];
         let fontColor = this.getFontColor()
@@ -2242,7 +2245,7 @@ class Widget extends Base {
         canvas.drawImageInRect(
             carImage,
             new Rect(
-                (canvasWidth - imageSize.width) / 2,
+               ( canvasWidth - imageSize.width)/2,
                 canvasHeight - imageSize.height,
                 imageSize.width,
                 imageSize.height
@@ -2251,13 +2254,13 @@ class Widget extends Base {
         return canvas.getImage();
     }
 
-    getImageSize(imageWidth, imageHeight, canvasWidth, canvasHeight, resizeRate = 0.96) {
+    getImageSize(imageWidth, imageHeight, canvasWidth, canvasHeight, resizeRate = 0.99) {
         let a = canvasWidth;
         let b = canvasWidth / imageWidth * imageHeight;
         console.log('imageWidth:' + a + ',imageHeight:' + b)
         console.log('canvasWidth:' + canvasWidth + ',canvasHeight:' + canvasHeight)
         if (resizeRate >= 1) {
-            resizeRate = 0.96;
+            resizeRate = 0.99;
         }
         while (true) {
             if (a >= canvasWidth || b >= canvasHeight) {
