@@ -826,6 +826,7 @@ let JS_CDN_SERVER = 'https://cdn.jsdelivr.net/gh/opp100/bmw-scriptable-widgets/l
 
 let DEFAULT_BG_COLOR_LIGHT = '#cc3399';
 let DEFAULT_BG_COLOR_DARK = '#0099ff';
+let DEFAULT_COLOR_FONT = '#FFFFFF';
 let DEFAULT_LOGO_LIGHT = 'https://z3.ax1x.com/2021/11/16/IRfMQO.png';
 let DEFAULT_FG_COLOR = '#111111';
 let DEFAULT_FG_COLOR_OPTICAL = '0.15';
@@ -1027,9 +1028,9 @@ class Widget extends Base {
         rightBox.size = new Size(boxWidth, boxHeight)
         rightBox.layoutVertically()
 
-        leftBox.setPadding(padding / 2, padding / 2, padding / 2, padding / 2)
+        leftBox.setPadding(6,6,2,2)
         leftBox.cornerRadius = CORRER_RADIUS
-        leftBox.backgroundColor = BACK_COLOR
+        leftBox.backgroundColor = new Color('#ffffff', 0.0);
         leftBox.layoutVertically()
         //logo
         const headBox = leftBox.addStack()
@@ -1050,7 +1051,8 @@ class Widget extends Base {
         updateTxt1.font = this.provideFont('medium', FONNT_SIZE)
         updateTxt1.textColor = fontColor
         this.addFontShadow(updateTxt1)
-        const updateTxt2 = headBox.addText(' 更新 ')
+        const updateTxt2 = headBox.addText(' 更新')
+        headBox.addSpacer(4)
         updateTxt2.font = this.provideFont('medium', FONNT_SIZE - 2)
         updateTxt2.textColor = fontColor
         this.addFontShadow(updateTxt2)
@@ -1081,14 +1083,14 @@ class Widget extends Base {
         carNameBox.addSpacer(null)
         const carNameText = carNameBox.addText(carName)
         carNameBox.addSpacer(null)
-        carNameText.font = this.provideFont('black', 22)
+        carNameText.font = this.provideFont('bold', 22)
         carNameText.textColor = fontColor
         carNameText.minimumScaleFactor = 0.5
         carNameText.lineLimit = 1
         this.addFontShadow(carNameText)
         //右边
         const carInfoBox = rightBox.addStack()
-        carInfoBox.setPadding(padding / 2, padding / 2, 0, padding / 2)
+        carInfoBox.setPadding(6,6, 0, 6)
         carInfoBox.cornerRadius = CORRER_RADIUS
         carInfoBox.backgroundColor = BACK_COLOR
         carInfoBox.layoutVertically()
@@ -1099,8 +1101,8 @@ class Widget extends Base {
         oilInfoBox.centerAlignContent()
         const oilIconBox = oilInfoBox.addStack()
         oilIconBox.size = new Size(LOGO_SIZE, LOGO_SIZE)
+        oilIconBox.setPadding(1,1,1,1)
         const oilIcon = oilIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/02/IPHyLt.png'))
-        oilIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         oilInfoBox.addSpacer(2)
         let fuelPercentage = this.getOilPercent(data)
         const oilPercentTxt = oilInfoBox.addText(`${fuelPercentage}%`)
@@ -1141,22 +1143,22 @@ class Widget extends Base {
             clockImage.tintColor = fontColor
         }
         else {
-            clockImage = clockBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/21/IjAoY4.png'))
+            clockImage = clockBox.addImage(await this.getImageByUrl('https://s1.ax1x.com/2021/12/09/o4aHqU.png'))
             clockImage.tintColor = Color.red()
         }
 
         //进度条
         oilBox.addSpacer(8)
         const processBarBox = oilBox.addStack()
-        const allLength = width / 2 - padding * 1.5 - padding
-        processBarBox.size = new Size(allLength, 0)
+        const allLength = boxWidth - 12
+        processBarBox.size = new Size(allLength, 10)
         const remainOilProcessBox = processBarBox.addStack()
         remainOilProcessBox.backgroundColor = fontColor
-        remainOilProcessBox.size = new Size(allLength * (fuelPercentage / 100), 12)
-        remainOilProcessBox.cornerRadius = 6
-        processBarBox.addSpacer(null)
+        remainOilProcessBox.size = new Size(allLength * (fuelPercentage / 100), 10)
+        processBarBox.addSpacer(allLength * (1 - fuelPercentage / 100))
+        remainOilProcessBox.cornerRadius = 4
         processBarBox.backgroundColor = new Color('#111111', 0.2)
-        processBarBox.cornerRadius = 6
+        processBarBox.cornerRadius = 4
         carInfoBox.addSpacer(null)
 
         //剩余里程
@@ -1165,12 +1167,12 @@ class Widget extends Base {
         rangeBox.bottomAlignContent()
         const rangeIconBox = rangeBox.addStack();
         rangeIconBox.centerAlignContent()
-        rangeIconBox.size = new Size(22, 26)
-        rangeIconBox.setPadding(0, 0, 4, 0)
+        rangeIconBox.size = new Size(22, 27)
+        rangeIconBox.setPadding(0, 0, 5, 0)
         const rangeIcon = rangeIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/02/IPbt6s.png'))
         rangeIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         rangeIcon.tintColor = fontColor
-        rangeBox.addSpacer(6)
+        rangeBox.addSpacer(null)
         const rangeValueBox = rangeBox.addStack();
         const rangeValueTxt = rangeValueBox.addText(rangeValue)
         rangeValueTxt.font = this.provideFont('black', 50)
@@ -1179,12 +1181,13 @@ class Widget extends Base {
         this.addFontShadow(rangeValueTxt)
         rangeBox.addSpacer(4)
         const rangeUnitsBox = rangeBox.addStack();
-        rangeUnitsBox.setPadding(0, 0, 4, 0)
+        rangeUnitsBox.setPadding(0, 0, 5, 0)
         const rangeUnitsTxt = rangeUnitsBox.addText(rangeUnits)
         rangeUnitsTxt.font = this.provideFont('bold', FONNT_SIZE)
         rangeUnitsTxt.textColor = fontColor
         rangeUnitsTxt.minimumScaleFactor = 0.8
         this.addFontShadow(rangeUnitsTxt)
+        rangeBox.addSpacer(null)
         rightBox.addSpacer(padding)
 
         //总里程
@@ -1281,18 +1284,17 @@ class Widget extends Base {
 
         //车辆位置
         const addressInfoBox = rightBox.addStack()
-        addressInfoBox.Size = new Size(0, boxHeight / 2 - padding / 2)
         addressInfoBox.layoutVertically()
-        addressInfoBox.setPadding(padding / 2, padding / 2, padding / 2, padding / 2)
+        addressInfoBox.setPadding(6,6,6,6)
         addressInfoBox.backgroundColor = BACK_COLOR
         addressInfoBox.cornerRadius = CORRER_RADIUS
         addressInfoBox.url = this.buildMapURL(longitude, latitude, data.properties.vehicleLocation.address.formatted)
         //图标
         const locationBox = addressInfoBox.addStack()
-        locationBox.size = new Size(boxWidth - padding, LOGO_SIZE)
+        locationBox.size = new Size(boxWidth - 12, LOGO_SIZE)
         const locationIconBox = locationBox.addStack()
         const locationIcon = locationIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/21/IjA8Fe.png'))
-        locationIconBox.addSpacer(padding / 2)
+        locationIconBox.addSpacer(6)
         locationIcon.tintColor = fontColor
         locationIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         const locationText = locationBox.addText(`定位`)
@@ -1306,25 +1308,18 @@ class Widget extends Base {
             temperatureText.font = this.provideFont('medium', 12)
             temperatureText.textColor = fontColor
             this.addFontShadow(temperatureText)
-            // const thermometerImageBox = locationBox.addStack()
-            // thermometerImageBox.size = new Size(LOGO_SIZE, LOGO_SIZE)
-            // const thermometerImage = thermometerImageBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/23/oS0rCV.png'))
-            // thermometerImage.tintColor = fontColor
         }
         //位置文本
-        addressInfoBox.addSpacer(null)
+        addressInfoBox.addSpacer(6)
         let addressStr = data.properties.vehicleLocation.address.formatted.replace(/.+?(省|市|自治区|自治州)/g, '')
         const addressBoxTxt = addressInfoBox.addText(addressStr)
         addressBoxTxt.font = this.provideFont('medium', 12)
         addressBoxTxt.textColor = fontColor
-        addressBoxTxt.line = 2
+        addressBoxTxt.lineLimit = 2
         this.addFontShadow(addressBoxTxt)
 
         //导航计算
         let plate = data.licensePlate
-        if (this.userConfigData.licensePlate) {
-            plate = this.userConfigData.licensePlate
-        }
         let distance = 0
         let duration = 0
         let text = '回家'
@@ -1391,18 +1386,18 @@ class Widget extends Base {
         }
 
         //填充导航数据
-        rightBox.addSpacer(padding / 2)
+        rightBox.addSpacer(padding)
         const pathBox = rightBox.addStack()
         pathBox.url = url;
         pathBox.Size = new Size(0, boxHeight / 2 - padding / 2)
         pathBox.layoutVertically()
-        pathBox.setPadding(padding / 2, padding / 2, padding / 2, padding / 2)
+        pathBox.setPadding(6,6,6,6)
         pathBox.backgroundColor = BACK_COLOR
         pathBox.cornerRadius = CORRER_RADIUS
 
         const titleBox = pathBox.addStack()
         titleBox.layoutHorizontally()
-        titleBox.size = new Size(boxWidth - padding, LOGO_SIZE)
+        titleBox.size = new Size(boxWidth - 12, LOGO_SIZE)
         //图标
         const iconBox = titleBox.addStack()
         iconBox.size = new Size(LOGO_SIZE, LOGO_SIZE)
@@ -1410,24 +1405,12 @@ class Widget extends Base {
         carIcon.tintColor = fontColor
 
         //地址
-        titleBox.addSpacer(padding / 2)
+        titleBox.addSpacer(6)
         const textText = titleBox.addText(text)
         textText.font = this.provideFont('heavy', FONNT_SIZE)
         textText.textColor = fontColor
         this.addFontShadow(textText)
         titleBox.addSpacer(null)
-        // //降雨概率
-        // if (weatherData) {
-        //     const probabilityText = titleBox.addText(`${weatherData.probability}`)
-        //     //const probabilityText = titleBox.addText(`23`)
-        //     probabilityText.font = this.provideFont('medium', FONNT_SIZE)
-        //     probabilityText.textColor = fontColor
-        //     const probabilityImageBox = titleBox.addStack()
-        //     probabilityImageBox.size = new Size(LOGO_SIZE, LOGO_SIZE)
-        //     const probabilityImage = probabilityImageBox.addImage(await this.getImageByUrl('https://s3.ax1x.com/2021/01/23/sHic0s.png'))
-        //     probabilityImage.tintColor = fontColor
-        // }
-
         //预计用时
         const durationBox = titleBox.addStack()
         let min = parseInt((duration / 60).toString())
@@ -1481,7 +1464,7 @@ class Widget extends Base {
         updateBox.addSpacer(2)
         const updateIconBox = updateBox.addStack()
         updateIconBox.size = new Size(FONNT_SIZE, FONNT_SIZE)
-        updateIconBox.setPadding(1, 0, 1, 0)
+        updateIconBox.setPadding(1, 0, 0, 0)
         const updateImage = updateIconBox.addImage(await this.getImageByUrl(`https://z3.ax1x.com/2021/11/27/omF4Bt.png`))
         updateImage.tintColor = fontColor
         updateBox.addSpacer(padding / 2 + 2)
@@ -1594,7 +1577,6 @@ class Widget extends Base {
         vin: '',
         oilTotal: '',
         bgImageMid: '',
-        licensePlate: '',
     };
 
     addressConfigData = {
@@ -1610,14 +1592,14 @@ class Widget extends Base {
         light: {
             startColor: DEFAULT_BG_COLOR_LIGHT,
             endColor: DEFAULT_BG_COLOR_DARK,
-            fontColor: DEFAULT_BG_COLOR_LIGHT,
+            fontColor: DEFAULT_COLOR_FONT,
             fgColor: DEFAULT_FG_COLOR,
             fgOptical: DEFAULT_FG_COLOR_OPTICAL
         },
         dark: {
             startColor: DEFAULT_BG_COLOR_LIGHT,
             endColor: DEFAULT_BG_COLOR_DARK,
-            fontColor: DEFAULT_BG_COLOR_LIGHT,
+            fontColor: DEFAULT_COLOR_FONT,
             fgColor: DEFAULT_FG_COLOR,
             fgOptical: DEFAULT_FG_COLOR_OPTICAL
         }
@@ -1839,7 +1821,6 @@ class Widget extends Base {
             vin: '车架号(多辆BMW时填写)',
             oilTotal: '邮箱容积（可为空）',
             bgImageMid: '背景图（可为空）',
-            licensePlate: '车牌号（可为空）',
         };
 
         for (const key in configSet) {
@@ -2163,7 +2144,7 @@ class Widget extends Base {
         let canvas = new DrawContext();
         canvas.size = new Size(canvasWidth, canvasHeight);
         canvas.opaque = false;
-        canvas.setFont(this.provideFont('heavy', Math.round(canvasHeight / 4.5)));
+        canvas.setFont(this.provideFont('bold', Math.round(canvasHeight / 4.5)));
         canvas.setTextColor(this.getFontColor());
         canvas.respectScreenScale = true;
 
