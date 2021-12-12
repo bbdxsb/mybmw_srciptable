@@ -829,7 +829,7 @@ let DEFAULT_BG_COLOR_DARK = '#0099ff';
 let DEFAULT_COLOR_FONT = '#FFFFFF';
 let DEFAULT_LOGO_LIGHT = 'https://z3.ax1x.com/2021/11/16/IRfMQO.png';
 let DEFAULT_FG_COLOR = '#111111';
-let DEFAULT_FG_COLOR_OPTICAL = '0.15';
+let DEFAULT_FG_COLOR_OPTICAL = '0.1';
 let MAPAPIKEY = '1b96b24cade3b58737ef6b5e142cb8c3';
 let WEATHERKEY = '6LBqE0F459FuHgIq'
 // header is might be used for preventing the bmw block the external api?
@@ -848,7 +848,7 @@ let MY_BMW_VEHICLE_UPDATE_LAST_AT = 'MY_BMW_VEHICLE_UPDATE_LAST_AT';
 let MY_BMW_VEHICLE_DATA = 'MY_BMW_VEHICLE_DATA';
 let REMAIL_OIL_KM = 90;
 
-let BACK_COLOR = new Color('#ffffff', 0.1);
+let BACK_COLOR = new Color('#111111', 0.1);
 let LOGO_SIZE = 18;
 
 let CORRER_RADIUS = 10;
@@ -1037,7 +1037,7 @@ class Widget extends Base {
         headBox.layoutHorizontally()
         headBox.centerAlignContent()
         const logoBox = headBox.addStack()
-        logoBox.size = new Size(LOGO_SIZE * 2.5, LOGO_SIZE)
+        logoBox.size = new Size(LOGO_SIZE * 2, LOGO_SIZE)
         let logoImage = logoBox.addImage(await this.getAppLogo())
         if (!this.userConfigData.custom_logo_image) {
             logoImage.tintColor = this.getFontColor()
@@ -1050,11 +1050,13 @@ class Widget extends Base {
         const updateTxt1 = headBox.addText(this.formatDate(data))
         updateTxt1.font = this.provideFont('medium', FONNT_SIZE)
         updateTxt1.textColor = fontColor
+        updateTxt1.textOpacity = 0.5
         this.addFontShadow(updateTxt1)
         const updateTxt2 = headBox.addText(' 更新')
         headBox.addSpacer(4)
         updateTxt2.font = this.provideFont('medium', FONNT_SIZE - 2)
         updateTxt2.textColor = fontColor
+        updateTxt2.textOpacity = 0.5
         this.addFontShadow(updateTxt2)
         //车型图片  
         if (isLarge) {
@@ -1172,14 +1174,14 @@ class Widget extends Base {
         const rangeIcon = rangeIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/02/IPbt6s.png'))
         rangeIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         rangeIcon.tintColor = fontColor
-        rangeBox.addSpacer(null)
+        rangeBox.addSpacer(6)
         const rangeValueBox = rangeBox.addStack();
         const rangeValueTxt = rangeValueBox.addText(rangeValue)
         rangeValueTxt.font = this.provideFont('black', 50)
         rangeValueTxt.textColor = fontColor
         rangeValueTxt.minimumScaleFactor = 0.7
         this.addFontShadow(rangeValueTxt)
-        rangeBox.addSpacer(4)
+        rangeBox.addSpacer(6)
         const rangeUnitsBox = rangeBox.addStack();
         rangeUnitsBox.setPadding(0, 0, 5, 0)
         const rangeUnitsTxt = rangeUnitsBox.addText(rangeUnits)
@@ -1187,7 +1189,7 @@ class Widget extends Base {
         rangeUnitsTxt.textColor = fontColor
         rangeUnitsTxt.minimumScaleFactor = 0.8
         this.addFontShadow(rangeUnitsTxt)
-        rangeBox.addSpacer(null)
+//         rangeBox.addSpacer(null)
         rightBox.addSpacer(padding)
 
         //总里程
@@ -1234,7 +1236,6 @@ class Widget extends Base {
         leftBox.cornerRadius = CORRER_RADIUS
         leftBox.backgroundColor = BACK_COLOR
         leftBox.backgroundImage = mapImage
-        leftBox.url = 'caiyunappfree://'
         let weatherData = null;
         //获取天气
         if (WEATHERKEY) {
@@ -1285,10 +1286,12 @@ class Widget extends Base {
         //车辆位置
         const addressInfoBox = rightBox.addStack()
         addressInfoBox.layoutVertically()
-        addressInfoBox.setPadding(6,6,6,6)
+        addressInfoBox.setPadding(6,6,4,6)
         addressInfoBox.backgroundColor = BACK_COLOR
         addressInfoBox.cornerRadius = CORRER_RADIUS
         addressInfoBox.url = this.buildMapURL(longitude, latitude, data.properties.vehicleLocation.address.formatted)
+
+leftBox.url=addressInfoBox.url
         //图标
         const locationBox = addressInfoBox.addStack()
         locationBox.size = new Size(boxWidth - 12, LOGO_SIZE)
@@ -1310,7 +1313,7 @@ class Widget extends Base {
             this.addFontShadow(temperatureText)
         }
         //位置文本
-        addressInfoBox.addSpacer(6)
+        addressInfoBox.addSpacer(null)
         let addressStr = data.properties.vehicleLocation.address.formatted.replace(/.+?(省|市|自治区|自治州)/g, '')
         const addressBoxTxt = addressInfoBox.addText(addressStr)
         addressBoxTxt.font = this.provideFont('medium', 12)
@@ -1389,9 +1392,9 @@ class Widget extends Base {
         rightBox.addSpacer(padding)
         const pathBox = rightBox.addStack()
         pathBox.url = url;
-        pathBox.Size = new Size(0, boxHeight / 2 - padding / 2)
+        pathBox.Size = new Size(0, boxHeight / 2 - padding)
         pathBox.layoutVertically()
-        pathBox.setPadding(6,6,6,6)
+        pathBox.setPadding(6,6,4,6)
         pathBox.backgroundColor = BACK_COLOR
         pathBox.cornerRadius = CORRER_RADIUS
 
@@ -1459,7 +1462,7 @@ class Widget extends Base {
         distanceText2.textColor = fontColor
         this.addFontShadow(distanceText2)
         //更新时间
-        messageBox.addSpacer(2)
+//         messageBox.addSpacer(2)
         const updateBox = messageBox.addStack()
         updateBox.addSpacer(2)
         const updateIconBox = updateBox.addStack()
@@ -2154,7 +2157,7 @@ class Widget extends Base {
                 canvas.drawTextInRect(
                     'ALL',
                     new Rect(
-                        canvasWidth * 0.05, //
+                        canvasWidth * 0.0, //
                         0,
                         Math.round(canvasWidth * 0.5),
                         Math.round(canvasWidth * 0.5)
@@ -2163,7 +2166,7 @@ class Widget extends Base {
                 canvas.drawTextInRect(
                     'GOOD',
                     new Rect(
-                        canvasWidth * 0.05,
+                        canvasWidth * 0.0,
                         Math.round(canvasHeight / 4.5),
                         Math.round(canvasWidth * 0.5),
                         Math.round(canvasWidth * 0.5)
@@ -2176,7 +2179,7 @@ class Widget extends Base {
                 exclamation.tintColor = new Color("#ff0000", 1)
                 canvas.drawImageInRect(
                     exclamation,
-                    new Rect(3, messageOffset, Math.round(messageFontSize * 1.2), Math.round(messageFontSize * 1.2))
+                    new Rect(0, messageOffset, Math.round(messageFontSize * 1.2), Math.round(messageFontSize * 1.2))
                 );
                 canvas.setFont(this.provideFont("bold", messageFontSize));
                 canvas.setTextColor(new Color("#ff0000", 1));
@@ -2184,7 +2187,7 @@ class Widget extends Base {
                     canvas.drawTextInRect(
                         checkControlMessage.title,
                         new Rect(
-                            Math.round(messageFontSize * 1.8),
+                            Math.round(messageFontSize * 1.5),
                             messageOffset,
                             Math.round(canvasWidth * 0.5),
                             Math.round(canvasWidth * 0.5)
