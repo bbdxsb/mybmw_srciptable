@@ -373,25 +373,12 @@ var mul_table=[512,512,456,512,328,456,335,512,405,328,271,456,388,335,292,512,4
       
       // Perform the additional processing for dark images.
       if (isDark) {
-      
-        // Draw the hard light box over it.
-        context.globalCompositeOperation = "hard-light";
-        context.fillStyle = "rgba(55,55,55,0.2)";
-        context.fillRect(0, 0, w, h);
-    
-        // Draw the soft light box over it.
-        context.globalCompositeOperation = "soft-light";
-        context.fillStyle = "rgba(55,55,55,1)";
-        context.fillRect(0, 0, w, h);
-    
-        // Draw the regular box over it.
-        context.globalCompositeOperation = "source-over";
-        context.fillStyle = "rgba(55,55,55,0.4)";
+        context.fillStyle = "rgba(55,55,55,0.1)";
         context.fillRect(0, 0, w, h);
       
       // Otherwise process light images.
       } else {
-        context.fillStyle = "rgba(255,255,255,0.4)";
+        context.fillStyle = "rgba(255,255,255,0.1)";
         context.fillRect(0, 0, w, h);
       }
     
