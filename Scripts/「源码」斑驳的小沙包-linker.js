@@ -180,7 +180,7 @@ class Widget extends Base {
         carNameBox.addSpacer(null)
         const carNameText = carNameBox.addText(carName)
         carNameBox.addSpacer(null)
-        carNameText.font = this.provideFont('black', 20)
+        carNameText.font = this.provideFont('bold', 22)
         carNameText.textColor = fontColor
         carNameText.minimumScaleFactor = 0.5
         carNameText.lineLimit = 1
@@ -225,7 +225,7 @@ class Widget extends Base {
         rightBox.size = new Size(boxWidth, boxHeight)
         rightBox.layoutVertically()
 
-        leftBox.setPadding(6,6,2,2)
+        leftBox.setPadding(6, 6, 2, 2)
         leftBox.cornerRadius = CORRER_RADIUS
         leftBox.backgroundColor = new Color('#ffffff', 0.0);
         leftBox.layoutVertically()
@@ -282,14 +282,14 @@ class Widget extends Base {
         carNameBox.addSpacer(null)
         const carNameText = carNameBox.addText(carName)
         carNameBox.addSpacer(null)
-        carNameText.font = this.provideFont('bold', 22)
+        carNameText.font = this.provideFont('bold', 20)
         carNameText.textColor = fontColor
         carNameText.minimumScaleFactor = 0.5
         carNameText.lineLimit = 1
         this.addFontShadow(carNameText)
         //右边
         const carInfoBox = rightBox.addStack()
-        carInfoBox.setPadding(6,6, 0, 6)
+        carInfoBox.setPadding(6, 6, 0, 6)
         carInfoBox.cornerRadius = CORRER_RADIUS
         carInfoBox.backgroundColor = BACK_COLOR
         carInfoBox.layoutVertically()
@@ -300,7 +300,7 @@ class Widget extends Base {
         oilInfoBox.centerAlignContent()
         const oilIconBox = oilInfoBox.addStack()
         oilIconBox.size = new Size(LOGO_SIZE, LOGO_SIZE)
-        oilIconBox.setPadding(1,1,1,1)
+        oilIconBox.setPadding(1, 1, 1, 1)
         const oilIcon = oilIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/02/IPHyLt.png'))
         oilInfoBox.addSpacer(2)
         let fuelPercentage = this.getOilPercent(data)
@@ -386,7 +386,7 @@ class Widget extends Base {
         rangeUnitsTxt.textColor = fontColor
         rangeUnitsTxt.minimumScaleFactor = 0.8
         this.addFontShadow(rangeUnitsTxt)
-//         rangeBox.addSpacer(null)
+        //         rangeBox.addSpacer(null)
         rightBox.addSpacer(padding)
 
         //总里程
@@ -437,8 +437,9 @@ class Widget extends Base {
         //获取天气
         if (WEATHERKEY) {
 
-            const mapBackgroundColor = new Color('#FAF7F0', 0.8)
-            const mapFontColor = new Color('#ABAAA9', 1)
+            const mapBackgroundColor = new Color('#FAF7F0', 1)
+            //             const mapFontColor = new Color('#ABAAA9', 1)
+            const mapFontColor = new Color('#111111', 0.6)
             weatherData = await this.getWeather(longitude, latitude)
             let mapBox = leftBox.addStack()
             mapBox.layoutVertically()
@@ -447,20 +448,21 @@ class Widget extends Base {
             const leftHeadBox = mapBox.addStack();
             const weatherBox = leftHeadBox.addStack();
             weatherBox.layoutVertically()
-            weatherBox.setPadding(0, 4, 0, 4)
-            weatherBox.size = new Size(40, 0)
+            weatherBox.setPadding(4, 4, 0, 2)
+            weatherBox.size = new Size(45, 0)
             //天气图标      
             const weatherIncoBox = weatherBox.addStack()
-            weatherIncoBox.setPadding(4, 5, 0, 5)
+            weatherIncoBox.setPadding(0, 4, 0, 6)
             const weatherInco = weatherIncoBox.addImage(await this.getSFSymbol(this.WeatherIcos[weatherData.weatherIco]))
             weatherBox.addSpacer(2)
             //最低温，最高温
             const temperatureBox = weatherBox.addStack()
             temperatureBox.backgroundColor = mapBackgroundColor
             temperatureBox.cornerRadius = 5
-            const temperatureText = temperatureBox.addText(`${weatherData.minTemperature}~${weatherData.maxTemperature}`)
-            //const temperatureText = temperatureBox.addText(`-88~-88`)
-            temperatureText.font = this.provideFont('regular', 12)
+            temperatureBox.setPadding(0,3,0,3)
+            const temperatureText = temperatureBox.addText(`${weatherData.minTemperature}/${weatherData.maxTemperature}`)
+            //const temperatureText = temperatureBox.addText(`23/33`)
+            temperatureText.font = this.provideFont('medium', 12)
             temperatureText.textColor = mapFontColor
             temperatureText.minimumScaleFactor = 0.5
             temperatureText.lineLimit = 1
@@ -472,10 +474,10 @@ class Widget extends Base {
             bottomBox.size = new Size(boxWidth, 16)
             let alertIfno = weatherData.weatherDesc
             if (weatherData.alertWeatherTitle) {
-                alertIfno = weatherData.alertWeatherTitle
+                alertIfno = weatherData.alertWeatherTitle.replace(/.+?(发布)/g, '')
             }
             const alertIfnoText = bottomBox.addText(alertIfno)
-            alertIfnoText.font = this.provideFont('bold', 12)
+            alertIfnoText.font = this.provideFont('medium', 12)
             alertIfnoText.textColor = mapFontColor
             alertIfnoText.minimumScaleFactor = 0.6
         }
@@ -483,12 +485,12 @@ class Widget extends Base {
         //车辆位置
         const addressInfoBox = rightBox.addStack()
         addressInfoBox.layoutVertically()
-        addressInfoBox.setPadding(6,6,4,6)
+        addressInfoBox.setPadding(6, 6, 4, 6)
         addressInfoBox.backgroundColor = BACK_COLOR
         addressInfoBox.cornerRadius = CORRER_RADIUS
         addressInfoBox.url = this.buildMapURL(longitude, latitude, data.properties.vehicleLocation.address.formatted)
 
-leftBox.url=addressInfoBox.url
+        leftBox.url = addressInfoBox.url
         //图标
         const locationBox = addressInfoBox.addStack()
         locationBox.size = new Size(boxWidth - 12, LOGO_SIZE)
@@ -591,7 +593,7 @@ leftBox.url=addressInfoBox.url
         pathBox.url = url;
         pathBox.Size = new Size(0, boxHeight / 2 - padding)
         pathBox.layoutVertically()
-        pathBox.setPadding(6,6,4,6)
+        pathBox.setPadding(6, 6, 4, 6)
         pathBox.backgroundColor = BACK_COLOR
         pathBox.cornerRadius = CORRER_RADIUS
 
@@ -659,7 +661,7 @@ leftBox.url=addressInfoBox.url
         distanceText2.textColor = fontColor
         this.addFontShadow(distanceText2)
         //更新时间
-//         messageBox.addSpacer(2)
+        //         messageBox.addSpacer(2)
         const updateBox = messageBox.addStack()
         updateBox.addSpacer(2)
         const updateIconBox = updateBox.addStack()
@@ -1446,7 +1448,7 @@ leftBox.url=addressInfoBox.url
             width = parseInt(width * 1.25);
             height = parseInt(height * 1.25);
             let url = `https://restapi.amap.com/v3/staticmap?location=${latLng}&scale=2&zoom=14&size=${width}*${height}&traffic=1&markers=large,0x0099FF,:${latLng}&key=${MAPAPIKEY}`;
-            const img = await this.getImageByUrl(url, false)
+            const img = await this.getImageByUrl(url, null, false)
             return img;
         } catch (e) {
             console.log('load map failed');
