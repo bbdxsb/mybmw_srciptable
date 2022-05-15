@@ -31,8 +31,12 @@ let MAPAPIKEY = '1b96b24cade3b58737ef6b5e142cb8c3';
 let WEATHERKEY = '6LBqE0F459FuHgIq'
 // header is might be used for preventing the bmw block the external api?
 let BMW_HEADERS = {
-    'user-agent': 'Dart/2.10 (dart:io)',
-    'x-user-agent': 'ios(15.0.2);bmw;1.6.6(10038)'
+    'user-agent': 'Dart/2.13 (dart:io)',
+    'x-user-agent': 'ios(15.4.1);bmw;2.3.0(13603)',
+    'content-type': 'application/json; charset=utf-8',
+    'accept-language': 'zh-CN',
+    'x-cluster-use-mock': 'never',
+    '24-hour-format': 'true',
 };
 
 // setup local storage keys
@@ -391,7 +395,7 @@ class Widget extends Base {
 
         //总里程
         const otherInfoBox = rightBox.addStack()
-        otherInfoBox.setPadding(padding, padding / 2, padding, padding / 2)
+        otherInfoBox.setPadding(8, 0, 8, 0)
         otherInfoBox.cornerRadius = CORRER_RADIUS
         otherInfoBox.backgroundColor = BACK_COLOR
         otherInfoBox.addSpacer(null)
@@ -500,7 +504,7 @@ class Widget extends Base {
         locationIcon.tintColor = fontColor
         locationIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         const locationText = locationBox.addText(`定位`)
-        locationText.font = this.provideFont('heavy', FONNT_SIZE)
+        locationText.font = this.provideFont('heavy', FONNT_SIZE+2)
         locationText.textColor = fontColor
         this.addFontShadow(locationText)
         locationBox.addSpacer(null)
@@ -609,7 +613,7 @@ class Widget extends Base {
         //地址
         titleBox.addSpacer(6)
         const textText = titleBox.addText(text)
-        textText.font = this.provideFont('heavy', FONNT_SIZE)
+        textText.font = this.provideFont('heavy', FONNT_SIZE+2)
         textText.textColor = fontColor
         this.addFontShadow(textText)
         titleBox.addSpacer(null)
@@ -1445,9 +1449,9 @@ class Widget extends Base {
     //地图
     async loadMapView(latLng, width, height) {
         try {
-            width = parseInt(width * 1.25);
-            height = parseInt(height * 1.25);
-            let url = `https://restapi.amap.com/v3/staticmap?location=${latLng}&scale=2&zoom=14&size=${width}*${height}&traffic=1&markers=large,0x0099FF,:${latLng}&key=${MAPAPIKEY}`;
+            width = parseInt(width * 1.2);
+            height = parseInt(height * 1.2);
+            let url = `https://restapi.amap.com/v3/staticmap?location=${latLng}&scale=2&zoom=13&size=${width}*${height}&traffic=1&markers=large,0x0099FF,:${latLng}&key=${MAPAPIKEY}`;
             const img = await this.getImageByUrl(url, null, false)
             return img;
         } catch (e) {
@@ -1519,6 +1523,29 @@ class Widget extends Base {
         return await this.getVehicleDetails(accessToken);
     }
 
+    async getNonce () {
+
+        let headers = {
+                'Content-Type': 'application/json',
+              }
+        let p = {
+                'mobile': this.userConfigData.username,
+                'verify': 'BMW-LINKER偷的一手好代码',
+              }
+        console.log( this.userConfigData.username,)   
+        let req = 'http://yymm.huchundong.com:7000/bimmer/getNonce'
+        const res = await this.httpPost(req, headers, JSON.stringify(p))     
+        console.log('[0+]获取随机秘钥')
+        if (res.code === 200) {
+          console.log(res)
+          return res.data
+        } else {
+            console.log('[0-]获取随机秘钥失败')
+          App.error = res.message
+          return null
+        }
+      }
+
     async getPublicKey() {
         let req = BMW_SERVER_HOST + '/eadrax-coas/v1/cop/publickey'
         const res = await this.httpGet(req)
@@ -1576,14 +1603,20 @@ class Widget extends Base {
     async myBMWLogin() {
         console.log('Start to get token');
         const _password = await this.getEncryptedPassword();
-        let req = BMW_SERVER_HOST + '/eadrax-coas/v1/login/pwd';
+        console.log('获取nonce')
+        let nonce = await this.getNonce()
+        let req = BMW_SERVER_HOST + '/eadrax-coas/v2/login/pwd';
         let body = JSON.stringify({
             mobile: this.userConfigData.username,
-            password: _password
+            password: _password,
+            deviceId: '6D3EB088-09A4-4B7E-A408-12B35275B946'
         });
         let headers = BMW_HEADERS;
+        headers["x-login-nonce"] = nonce
+        console.log(headers);
         console.log('trying to login');
         const res = await this.httpPost(req, headers, body)
+        console.log(res);
         if (res.code == 200) {
             return res.data;
         } else {

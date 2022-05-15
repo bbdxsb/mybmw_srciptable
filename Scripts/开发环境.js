@@ -45,7 +45,7 @@ class Base {
   }
 
   /**
-   * 注册点击操作菜单
+   * 注册点击操作菜单a
    * @param {string} name 操作函数名
    * @param {func} func 点击后执行的函数
    */
