@@ -1,6 +1,6 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
-// icon-color: deep-gray; icon-glyph: yin-yang;
+// icon-color: cyan; icon-glyph: yin-yang;
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: deep-gray; icon-glyph: code-branch;
@@ -48,7 +48,7 @@ class Base {
   }
 
   /**
-   * 注册点击操作菜单
+   * 注册点击操作菜单a
    * @param {string} name 操作函数名
    * @param {func} func 点击后执行的函数
    */
@@ -250,7 +250,7 @@ class Base {
     }
 
     async function blurImage(img, style) {
-      const blur = 150
+      const blur = 15
       const js = `
 var mul_table=[512,512,456,512,328,456,335,512,405,328,271,456,388,335,292,512,454,405,364,328,298,271,496,456,420,388,360,335,312,292,273,512,482,454,428,405,383,364,345,328,312,298,284,271,259,496,475,456,437,420,404,388,374,360,347,335,323,312,302,292,282,273,265,512,497,482,468,454,441,428,417,405,394,383,373,364,354,345,337,328,320,312,305,298,291,284,278,271,265,259,507,496,485,475,465,456,446,437,428,420,412,404,396,388,381,374,367,360,354,347,341,335,329,323,318,312,307,302,297,292,287,282,278,273,269,265,261,512,505,497,489,482,475,468,461,454,447,441,435,428,422,417,411,405,399,394,389,383,378,373,368,364,359,354,350,345,341,337,332,328,324,320,316,312,309,305,301,298,294,291,287,284,281,278,274,271,268,265,262,259,257,507,501,496,491,485,480,475,470,465,460,456,451,446,442,437,433,428,424,420,416,412,408,404,400,396,392,388,385,381,377,374,370,367,363,360,357,354,350,347,344,341,338,335,332,329,326,323,320,318,315,312,310,307,304,302,299,297,294,292,289,287,285,282,280,278,275,273,271,269,267,265,263,261,259];var shg_table=[9,11,12,13,13,14,14,15,15,15,15,16,16,16,16,17,17,17,17,17,17,17,18,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24];function stackBlurCanvasRGB(id,top_x,top_y,width,height,radius){if(isNaN(radius)||radius<1)return;radius|=0;var canvas=document.getElementById(id);var context=canvas.getContext("2d");var imageData;try{try{imageData=context.getImageData(top_x,top_y,width,height)}catch(e){try{netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");imageData=context.getImageData(top_x,top_y,width,height)}catch(e){alert("Cannot access local image");throw new Error("unable to access local image data: "+e);return}}}catch(e){alert("Cannot access image");throw new Error("unable to access image data: "+e);}var pixels=imageData.data;var x,y,i,p,yp,yi,yw,r_sum,g_sum,b_sum,r_out_sum,g_out_sum,b_out_sum,r_in_sum,g_in_sum,b_in_sum,pr,pg,pb,rbs;var div=radius+radius+1;var w4=width<<2;var widthMinus1=width-1;var heightMinus1=height-1;var radiusPlus1=radius+1;var sumFactor=radiusPlus1*(radiusPlus1+1)/2;var stackStart=new BlurStack();var stack=stackStart;for(i=1;i<div;i++){stack=stack.next=new BlurStack();if(i==radiusPlus1)var stackEnd=stack}stack.next=stackStart;var stackIn=null;var stackOut=null;yw=yi=0;var mul_sum=mul_table[radius];var shg_sum=shg_table[radius];for(y=0;y<height;y++){r_in_sum=g_in_sum=b_in_sum=r_sum=g_sum=b_sum=0;r_out_sum=radiusPlus1*(pr=pixels[yi]);g_out_sum=radiusPlus1*(pg=pixels[yi+1]);b_out_sum=radiusPlus1*(pb=pixels[yi+2]);r_sum+=sumFactor*pr;g_sum+=sumFactor*pg;b_sum+=sumFactor*pb;stack=stackStart;for(i=0;i<radiusPlus1;i++){stack.r=pr;stack.g=pg;stack.b=pb;stack=stack.next}for(i=1;i<radiusPlus1;i++){p=yi+((widthMinus1<i?widthMinus1:i)<<2);r_sum+=(stack.r=(pr=pixels[p]))*(rbs=radiusPlus1-i);g_sum+=(stack.g=(pg=pixels[p+1]))*rbs;b_sum+=(stack.b=(pb=pixels[p+2]))*rbs;r_in_sum+=pr;g_in_sum+=pg;b_in_sum+=pb;stack=stack.next}stackIn=stackStart;stackOut=stackEnd;for(x=0;x<width;x++){pixels[yi]=(r_sum*mul_sum)>>shg_sum;pixels[yi+1]=(g_sum*mul_sum)>>shg_sum;pixels[yi+2]=(b_sum*mul_sum)>>shg_sum;r_sum-=r_out_sum;g_sum-=g_out_sum;b_sum-=b_out_sum;r_out_sum-=stackIn.r;g_out_sum-=stackIn.g;b_out_sum-=stackIn.b;p=(yw+((p=x+radius+1)<widthMinus1?p:widthMinus1))<<2;r_in_sum+=(stackIn.r=pixels[p]);g_in_sum+=(stackIn.g=pixels[p+1]);b_in_sum+=(stackIn.b=pixels[p+2]);r_sum+=r_in_sum;g_sum+=g_in_sum;b_sum+=b_in_sum;stackIn=stackIn.next;r_out_sum+=(pr=stackOut.r);g_out_sum+=(pg=stackOut.g);b_out_sum+=(pb=stackOut.b);r_in_sum-=pr;g_in_sum-=pg;b_in_sum-=pb;stackOut=stackOut.next;yi+=4}yw+=width}for(x=0;x<width;x++){g_in_sum=b_in_sum=r_in_sum=g_sum=b_sum=r_sum=0;yi=x<<2;r_out_sum=radiusPlus1*(pr=pixels[yi]);g_out_sum=radiusPlus1*(pg=pixels[yi+1]);b_out_sum=radiusPlus1*(pb=pixels[yi+2]);r_sum+=sumFactor*pr;g_sum+=sumFactor*pg;b_sum+=sumFactor*pb;stack=stackStart;for(i=0;i<radiusPlus1;i++){stack.r=pr;stack.g=pg;stack.b=pb;stack=stack.next}yp=width;for(i=1;i<=radius;i++){yi=(yp+x)<<2;r_sum+=(stack.r=(pr=pixels[yi]))*(rbs=radiusPlus1-i);g_sum+=(stack.g=(pg=pixels[yi+1]))*rbs;b_sum+=(stack.b=(pb=pixels[yi+2]))*rbs;r_in_sum+=pr;g_in_sum+=pg;b_in_sum+=pb;stack=stack.next;if(i<heightMinus1){yp+=width}}yi=x;stackIn=stackStart;stackOut=stackEnd;for(y=0;y<height;y++){p=yi<<2;pixels[p]=(r_sum*mul_sum)>>shg_sum;pixels[p+1]=(g_sum*mul_sum)>>shg_sum;pixels[p+2]=(b_sum*mul_sum)>>shg_sum;r_sum-=r_out_sum;g_sum-=g_out_sum;b_sum-=b_out_sum;r_out_sum-=stackIn.r;g_out_sum-=stackIn.g;b_out_sum-=stackIn.b;p=(x+(((p=y+radiusPlus1)<heightMinus1?p:heightMinus1)*width))<<2;r_sum+=(r_in_sum+=(stackIn.r=pixels[p]));g_sum+=(g_in_sum+=(stackIn.g=pixels[p+1]));b_sum+=(b_in_sum+=(stackIn.b=pixels[p+2]));stackIn=stackIn.next;r_out_sum+=(pr=stackOut.r);g_out_sum+=(pg=stackOut.g);b_out_sum+=(pb=stackOut.b);r_in_sum-=pr;g_in_sum-=pg;b_in_sum-=pb;stackOut=stackOut.next;yi+=width}}context.putImageData(imageData,top_x,top_y)}function BlurStack(){this.r=0;this.g=0;this.b=0;this.a=0;this.next=null}
       // https://gist.github.com/mjackson/5311256
@@ -376,12 +376,12 @@ var mul_table=[512,512,456,512,328,456,335,512,405,328,271,456,388,335,292,512,4
       
       // Perform the additional processing for dark images.
       if (isDark) {
-        context.fillStyle = "rgba(55,55,55,0.1)";
+        context.fillStyle = "rgba(128,128,128,0.1)";
         context.fillRect(0, 0, w, h);
       
       // Otherwise process light images.
       } else {
-        context.fillStyle = "rgba(255,255,255,0.1)";
+        context.fillStyle = "rgba(160,160,160,0.1)";
         context.fillRect(0, 0, w, h);
       }
     
@@ -605,12 +605,12 @@ var mul_table=[512,512,456,512,328,456,335,512,405,328,271,456,388,335,292,512,4
 
     // 透明/模糊选项
     message = "需要给背景图片加什么显示效果？"
-    let blurOptions = ["透明", "白色 模糊", "黑色 模糊"]
+    let blurOptions = ["透明", "模糊"]
     let blurred = await generateAlert(message, blurOptions)
 
     // Crop image and finalize the widget.
     if (blurred) {
-      const style = (blurred === 1) ? 'light' : 'dark'
+      const style = 'dark'
       img = await blurImage(img, style)
     }
     let imgCrop = cropImage(img, new Rect(crop.x, crop.y, crop.w, crop.h))
@@ -642,7 +642,7 @@ var mul_table=[512,512,456,512,328,456,335,512,405,328,271,456,388,335,292,512,4
    * @param {string} color 遮罩背景颜色
    * @param {float} opacity 透明度
    */
-  async shadowImage(img, color = '#000000', opacity = 0.7) {
+  async shadowImage(img, color = '#000000', opacity = 0.2) {
     let ctx = new DrawContext()
     // 获取图片的尺寸
     ctx.size = img.size
@@ -832,10 +832,10 @@ let BMW_HEADERS = {
 // setup local storage keys
 let MY_BMW_REFRESH_TOKEN = 'MY_BMW_REFRESH_TOKEN';
 let MY_BMW_TOKEN = 'MY_BMW_TOKEN';
-let MY_BMW_TOKEN_UPDATE_LAST_AT = 'MY_BMW_TOKEN_UPDATE_LAST_AT';
-let MY_BMW_LAST_CHECK_IN_AT = 'MY_BMW_LAST_CHECK_IN_AT';
+let MY_BMW_TOKEN_UPDATE_LAST_AT = 'MY_BMW_TOKEN_UPDATE_LAST';
+let MY_BMW_LAST_CHECK_IN_AT = 'MY_BMW_LAST_CHECK_IN';
 let APP_USE_AGREEMENT = 'APP_USE_AGREEMENT';
-let MY_BMW_VEHICLE_UPDATE_LAST_AT = 'MY_BMW_VEHICLE_UPDATE_LAST_AT';
+let MY_BMW_VEHICLE_UPDATE_LAST_AT = 'MY_BMW_VEHICLE_UPDATE_LAST';
 let MY_BMW_VEHICLE_DATA = 'MY_BMW_VEHICLE_DATA';
 let REMAIL_OIL_KM = 90;
 
@@ -908,7 +908,7 @@ class Widget extends Base {
     //#region  小组件
     async renderSmall(data) {
         let w = new ListWidget();
-        const padding = 8
+        const padding = 12
         const { width, height } = data.size['small'];
         const box = w.addStack()
         box.size = new Size(width, height)
@@ -917,68 +917,104 @@ class Widget extends Base {
         const fontColor = this.getFontColor()
         const headBox = box.addStack()
         headBox.layoutHorizontally()
-
         const {
             rangeValue,
             rangeUnits,
         } = data.status.fuelIndicators[0]
 
         //油位
+        const oilIconBox = headBox.addStack()
+        oilIconBox.size = new Size(LOGO_SIZE + 4, LOGO_SIZE + 2)
+        oilIconBox.setPadding(1, 0, 0, 4)
+        const oilIcon = oilIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/02/IPHyLt.png'))
+        oilIcon.tintColor = fontColor
         const rangeBox = headBox.addStack()
         rangeBox.bottomAlignContent()
-        rangeBox.setPadding(0, 2, 0, 0)
+
         //百分比
         let fuelPercentage = this.getOilPercent(data)
         const oilPercentTxt = rangeBox.addText(`${fuelPercentage}`)
-        oilPercentTxt.font = this.provideFont('bold', 24)
-        oilPercentTxt.textColor = fontColor
+        //const oilPercentTxt = rangeBox.addText(`100`)
+        oilPercentTxt.font = this.provideFont('bold', 18)
         oilPercentTxt.minimumScaleFactor = 0.8
+        oilPercentTxt.textColor = fontColor
         oilPercentTxt.lineLimit = 1
         this.addFontShadow(oilPercentTxt)
         //%
         const percentageBox = rangeBox.addStack();
-        percentageBox.setPadding(0, 0, 3, 0)
+        percentageBox.setPadding(0, 0, 1, 0)
         const percentageText = percentageBox.addText(' %  /  ')
-        percentageText.font = this.provideFont('regular', 13)
+        percentageText.font = this.provideFont('regular', 11)
         percentageText.textColor = fontColor
         percentageText.lineLimit = 1
         this.addFontShadow(percentageText)
         //续航里程
         const rangeValueText = rangeBox.addText(rangeValue)
-        rangeValueText.font = this.provideFont('bold', 24)
-        rangeValueText.textColor = fontColor
+        rangeValueText.font = this.provideFont('bold', 18)
         rangeValueText.minimumScaleFactor = 0.8
+        rangeValueText.textColor = fontColor
         rangeValueText.lineLimit = 1
         this.addFontShadow(rangeValueText)
         //km
         const rangeUnitsBox = rangeBox.addStack();
-        rangeUnitsBox.setPadding(0, 0, 3, 0)
+        rangeUnitsBox.setPadding(0, 0, 1, 0)
         const rangeUnitsText = rangeUnitsBox.addText(' ' + rangeUnits)
-        rangeUnitsText.font = this.provideFont('regular', 13)
+        rangeUnitsText.font = this.provideFont('regular', 11)
         rangeUnitsText.textColor = fontColor
         rangeUnitsText.lineLimit = 1
         this.addFontShadow(rangeUnitsText)
+        if (rangeValue <= REMAIL_OIL_KM) {
+            oilIcon.tintColor = new Color('#ff0000', 1)
+            oilPercentTxt.textColor = new Color('#ff0000', 1)
+            percentageText.textColor = new Color('#ff0000', 1)
+            rangeValueText.textColor = new Color('#ff0000', 1)
+            rangeUnitsText.textColor = new Color('#ff0000', 1)
+        }
 
         //车型图片  
-        box.addSpacer(2)
-        let imageCar = await this.getCarCanvasImage(data, width - padding * 2, (height - padding * 2) * 0.6);
+        box.addSpacer(8)
+        let imageCar = await this.getCarCanvasImage(data, width - padding * 2, (height - padding * 2) * 0.55);
         box.addImage(imageCar)
+        box.addSpacer(8)
 
-        //车型名称
-        box.addSpacer(2)
-        let carName = `${data.brand} ${data.bodyType} ${data.model}`
-        if (this.userConfigData.custom_name.length > 0) {
-            carName = this.userConfigData.custom_name
-        }
-        const carNameBox = box.addStack()
-        carNameBox.addSpacer(null)
-        const carNameText = carNameBox.addText(carName)
-        carNameBox.addSpacer(null)
-        carNameText.font = this.provideFont('bold', 22)
-        carNameText.textColor = fontColor
-        carNameText.minimumScaleFactor = 0.5
-        carNameText.lineLimit = 1
-        this.addFontShadow(carNameText)
+        //总里程
+        const rallMileageBox = box.addStack()
+        rallMileageBox.bottomAlignContent()
+        const allMileageTxt = rallMileageBox.addText(`总里程：${data.status.currentMileage.mileage}`)
+        allMileageTxt.font = this.provideFont('medium', 18)
+        allMileageTxt.textColor = fontColor
+        this.addFontShadow(allMileageTxt)
+        allMileageTxt.minimumScaleFactor = 0.8
+        allMileageTxt.lineLimit = 1
+
+        const aunitsTxtBox = rallMileageBox.addStack()
+        const aunitsTxt = aunitsTxtBox.addText(' ' + data.status.currentMileage.units)
+        aunitsTxtBox.setPadding(0, 0, 1, 0)
+        aunitsTxt.font = this.provideFont('medium', 11)
+        aunitsTxt.textColor = fontColor
+        this.addFontShadow(aunitsTxt)
+        aunitsTxt.minimumScaleFactor = 0.8
+        aunitsTxt.lineLimit = 1
+
+
+
+        // //车型名称
+        // let carName = `${data.brand} ${data.bodyType} ${data.model}`
+        // if (this.userConfigData.custom_name.length > 0) {
+        //     carName = this.userConfigData.custom_name
+        // }
+        // const carNameBox = box.addStack()
+        // carNameBox.addSpacer(null)
+        // const carNameText = carNameBox.addText(carName)
+        // carNameBox.addSpacer(null)
+        // carNameText.font = this.provideFont('bold', 22)
+        // carNameText.textColor = fontColor
+        // carNameText.minimumScaleFactor = 0.5
+        // carNameText.lineLimit = 1
+        // this.addFontShadow(carNameText)
+
+
+        //点击事件
         w.url = 'de.bmw.connected.mobile20.cn.Share-Ext.Destination://'
         return w;
     }
@@ -1223,10 +1259,11 @@ class Widget extends Base {
 
         //加载地图
         let mapImage = await this.loadMapView(`${longitude},${latitude}`, boxWidth, boxHeight);
-        mapImage.opacity = 0.5
+        mapImage.opacity = 0.2
         leftBox.cornerRadius = CORRER_RADIUS
         leftBox.backgroundColor = BACK_COLOR
         leftBox.backgroundImage = mapImage
+        leftBox.backgroundImage.opacity = 0.2
         let weatherData = null;
         //获取天气
         if (WEATHERKEY) {
@@ -1253,7 +1290,7 @@ class Widget extends Base {
             const temperatureBox = weatherBox.addStack()
             temperatureBox.backgroundColor = mapBackgroundColor
             temperatureBox.cornerRadius = 5
-            temperatureBox.setPadding(0,3,0,3)
+            temperatureBox.setPadding(0, 3, 0, 3)
             const temperatureText = temperatureBox.addText(`${weatherData.minTemperature}/${weatherData.maxTemperature}`)
             //const temperatureText = temperatureBox.addText(`23/33`)
             temperatureText.font = this.provideFont('medium', 12)
@@ -1294,7 +1331,7 @@ class Widget extends Base {
         locationIcon.tintColor = fontColor
         locationIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         const locationText = locationBox.addText(`定位`)
-        locationText.font = this.provideFont('heavy', FONNT_SIZE+2)
+        locationText.font = this.provideFont('heavy', FONNT_SIZE + 2)
         locationText.textColor = fontColor
         this.addFontShadow(locationText)
         locationBox.addSpacer(null)
@@ -1403,7 +1440,7 @@ class Widget extends Base {
         //地址
         titleBox.addSpacer(6)
         const textText = titleBox.addText(text)
-        textText.font = this.provideFont('heavy', FONNT_SIZE+2)
+        textText.font = this.provideFont('heavy', FONNT_SIZE + 2)
         textText.textColor = fontColor
         this.addFontShadow(textText)
         titleBox.addSpacer(null)
@@ -1486,12 +1523,12 @@ class Widget extends Base {
         let fontColor = this.getFontColor()
         //上部
         let topBox = w.addStack()
-        topBox.setPadding(padding * 2, padding, padding, padding)
-        topBox = await this.getCarInfo(topBox, data, width, height / 2 - padding * 1.5, padding, fontColor, true);
+        topBox.setPadding(padding, padding, padding, padding)
+        topBox = await this.getCarInfo(topBox, data, width, height / 2 - padding, padding, fontColor, true);
         //下部
         let bottomBox = w.addStack()
-        bottomBox.setPadding(padding, padding, padding * 2, padding)
-        bottomBox = await this.getMapBox(bottomBox, data, width, height / 2 - padding * 1.5, padding, fontColor)
+        bottomBox.setPadding(padding, padding, padding, padding)
+        bottomBox = await this.getMapBox(bottomBox, data, width, height / 2 - padding, padding, fontColor)
         return w;
     }
     //#endregion
@@ -2313,28 +2350,27 @@ class Widget extends Base {
         return await this.getVehicleDetails(accessToken);
     }
 
-    async getNonce () {
+    async getNonce() {
 
         let headers = {
-                'Content-Type': 'application/json',
-              }
+            'Content-Type': 'application/json',
+        }
         let p = {
-                'mobile': this.userConfigData.username,
-                'verify': 'BMW-LINKER偷的一手好代码',
-              }
-        console.log( this.userConfigData.username,)   
+            'mobile': this.userConfigData.username,
+            'verify': 'BMW-LINKER偷的一手好代码',
+        }
+        console.log(this.userConfigData.username,)
         let req = 'http://yymm.huchundong.com:7000/bimmer/getNonce'
-        const res = await this.httpPost(req, headers, JSON.stringify(p))     
+        const res = await this.httpPost(req, headers, JSON.stringify(p))
         console.log('[0+]获取随机秘钥')
         if (res.code === 200) {
-          console.log(res)
-          return res.data
+            console.log(res)
+            return res.data
         } else {
-            console.log('[0-]获取随机秘钥失败')
-          App.error = res.message
-          return null
+            console.log('[0-]获取随机秘钥失败:' + res.message)
+            return null
         }
-      }
+    }
 
     async getPublicKey() {
         let req = BMW_SERVER_HOST + '/eadrax-coas/v1/cop/publickey'
@@ -2352,7 +2388,7 @@ class Widget extends Base {
         let accessToken = '';
         if (Keychain.contains(MY_BMW_TOKEN_UPDATE_LAST_AT)) {
             let lastUpdate = parseInt(Keychain.get(MY_BMW_TOKEN_UPDATE_LAST_AT));
-            if (lastUpdate > new Date().valueOf() - 1000 * 60 * 50) {
+            if (lastUpdate > new Date().valueOf() - 1000 * 60 * 30) {
                 if (Keychain.contains(MY_BMW_TOKEN)) {
                     accessToken = Keychain.get(MY_BMW_TOKEN);
                 }

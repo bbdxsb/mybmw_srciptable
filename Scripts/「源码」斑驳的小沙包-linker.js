@@ -1,6 +1,6 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
-// icon-color: deep-gray; icon-glyph: yin-yang;
+// icon-color: cyan; icon-glyph: yin-yang;
 //
 // iOS 桌面组件脚本 @「小件件」
 // 开发说明：请从 Widget 类开始编写，注释请勿修改
@@ -42,10 +42,10 @@ let BMW_HEADERS = {
 // setup local storage keys
 let MY_BMW_REFRESH_TOKEN = 'MY_BMW_REFRESH_TOKEN';
 let MY_BMW_TOKEN = 'MY_BMW_TOKEN';
-let MY_BMW_TOKEN_UPDATE_LAST_AT = 'MY_BMW_TOKEN_UPDATE_LAST_AT';
-let MY_BMW_LAST_CHECK_IN_AT = 'MY_BMW_LAST_CHECK_IN_AT';
+let MY_BMW_TOKEN_UPDATE_LAST_AT = 'MY_BMW_TOKEN_UPDATE_LAST';
+let MY_BMW_LAST_CHECK_IN_AT = 'MY_BMW_LAST_CHECK_IN';
 let APP_USE_AGREEMENT = 'APP_USE_AGREEMENT';
-let MY_BMW_VEHICLE_UPDATE_LAST_AT = 'MY_BMW_VEHICLE_UPDATE_LAST_AT';
+let MY_BMW_VEHICLE_UPDATE_LAST_AT = 'MY_BMW_VEHICLE_UPDATE_LAST';
 let MY_BMW_VEHICLE_DATA = 'MY_BMW_VEHICLE_DATA';
 let REMAIL_OIL_KM = 90;
 
@@ -118,7 +118,7 @@ class Widget extends Base {
     //#region  小组件
     async renderSmall(data) {
         let w = new ListWidget();
-        const padding = 8
+        const padding = 12
         const { width, height } = data.size['small'];
         const box = w.addStack()
         box.size = new Size(width, height)
@@ -127,68 +127,104 @@ class Widget extends Base {
         const fontColor = this.getFontColor()
         const headBox = box.addStack()
         headBox.layoutHorizontally()
-
         const {
             rangeValue,
             rangeUnits,
         } = data.status.fuelIndicators[0]
 
         //油位
+        const oilIconBox = headBox.addStack()
+        oilIconBox.size = new Size(LOGO_SIZE + 4, LOGO_SIZE + 2)
+        oilIconBox.setPadding(1, 0, 0, 4)
+        const oilIcon = oilIconBox.addImage(await this.getImageByUrl('https://z3.ax1x.com/2021/11/02/IPHyLt.png'))
+        oilIcon.tintColor = fontColor
         const rangeBox = headBox.addStack()
         rangeBox.bottomAlignContent()
-        rangeBox.setPadding(0, 2, 0, 0)
+
         //百分比
         let fuelPercentage = this.getOilPercent(data)
         const oilPercentTxt = rangeBox.addText(`${fuelPercentage}`)
-        oilPercentTxt.font = this.provideFont('bold', 24)
-        oilPercentTxt.textColor = fontColor
+        //const oilPercentTxt = rangeBox.addText(`100`)
+        oilPercentTxt.font = this.provideFont('bold', 18)
         oilPercentTxt.minimumScaleFactor = 0.8
+        oilPercentTxt.textColor = fontColor
         oilPercentTxt.lineLimit = 1
         this.addFontShadow(oilPercentTxt)
         //%
         const percentageBox = rangeBox.addStack();
-        percentageBox.setPadding(0, 0, 3, 0)
+        percentageBox.setPadding(0, 0, 1, 0)
         const percentageText = percentageBox.addText(' %  /  ')
-        percentageText.font = this.provideFont('regular', 13)
+        percentageText.font = this.provideFont('regular', 11)
         percentageText.textColor = fontColor
         percentageText.lineLimit = 1
         this.addFontShadow(percentageText)
         //续航里程
         const rangeValueText = rangeBox.addText(rangeValue)
-        rangeValueText.font = this.provideFont('bold', 24)
-        rangeValueText.textColor = fontColor
+        rangeValueText.font = this.provideFont('bold', 18)
         rangeValueText.minimumScaleFactor = 0.8
+        rangeValueText.textColor = fontColor
         rangeValueText.lineLimit = 1
         this.addFontShadow(rangeValueText)
         //km
         const rangeUnitsBox = rangeBox.addStack();
-        rangeUnitsBox.setPadding(0, 0, 3, 0)
+        rangeUnitsBox.setPadding(0, 0, 1, 0)
         const rangeUnitsText = rangeUnitsBox.addText(' ' + rangeUnits)
-        rangeUnitsText.font = this.provideFont('regular', 13)
+        rangeUnitsText.font = this.provideFont('regular', 11)
         rangeUnitsText.textColor = fontColor
         rangeUnitsText.lineLimit = 1
         this.addFontShadow(rangeUnitsText)
+        if (rangeValue <= REMAIL_OIL_KM) {
+            oilIcon.tintColor = new Color('#ff0000', 1)
+            oilPercentTxt.textColor = new Color('#ff0000', 1)
+            percentageText.textColor = new Color('#ff0000', 1)
+            rangeValueText.textColor = new Color('#ff0000', 1)
+            rangeUnitsText.textColor = new Color('#ff0000', 1)
+        }
 
         //车型图片  
-        box.addSpacer(2)
-        let imageCar = await this.getCarCanvasImage(data, width - padding * 2, (height - padding * 2) * 0.6);
+        box.addSpacer(8)
+        let imageCar = await this.getCarCanvasImage(data, width - padding * 2, (height - padding * 2) * 0.55);
         box.addImage(imageCar)
+        box.addSpacer(8)
 
-        //车型名称
-        box.addSpacer(2)
-        let carName = `${data.brand} ${data.bodyType} ${data.model}`
-        if (this.userConfigData.custom_name.length > 0) {
-            carName = this.userConfigData.custom_name
-        }
-        const carNameBox = box.addStack()
-        carNameBox.addSpacer(null)
-        const carNameText = carNameBox.addText(carName)
-        carNameBox.addSpacer(null)
-        carNameText.font = this.provideFont('bold', 22)
-        carNameText.textColor = fontColor
-        carNameText.minimumScaleFactor = 0.5
-        carNameText.lineLimit = 1
-        this.addFontShadow(carNameText)
+        //总里程
+        const rallMileageBox = box.addStack()
+        rallMileageBox.bottomAlignContent()
+        const allMileageTxt = rallMileageBox.addText(`总里程：${data.status.currentMileage.mileage}`)
+        allMileageTxt.font = this.provideFont('medium', 18)
+        allMileageTxt.textColor = fontColor
+        this.addFontShadow(allMileageTxt)
+        allMileageTxt.minimumScaleFactor = 0.8
+        allMileageTxt.lineLimit = 1
+
+        const aunitsTxtBox = rallMileageBox.addStack()
+        const aunitsTxt = aunitsTxtBox.addText(' ' + data.status.currentMileage.units)
+        aunitsTxtBox.setPadding(0, 0, 1, 0)
+        aunitsTxt.font = this.provideFont('medium', 11)
+        aunitsTxt.textColor = fontColor
+        this.addFontShadow(aunitsTxt)
+        aunitsTxt.minimumScaleFactor = 0.8
+        aunitsTxt.lineLimit = 1
+
+
+
+        // //车型名称
+        // let carName = `${data.brand} ${data.bodyType} ${data.model}`
+        // if (this.userConfigData.custom_name.length > 0) {
+        //     carName = this.userConfigData.custom_name
+        // }
+        // const carNameBox = box.addStack()
+        // carNameBox.addSpacer(null)
+        // const carNameText = carNameBox.addText(carName)
+        // carNameBox.addSpacer(null)
+        // carNameText.font = this.provideFont('bold', 22)
+        // carNameText.textColor = fontColor
+        // carNameText.minimumScaleFactor = 0.5
+        // carNameText.lineLimit = 1
+        // this.addFontShadow(carNameText)
+
+
+        //点击事件
         w.url = 'de.bmw.connected.mobile20.cn.Share-Ext.Destination://'
         return w;
     }
@@ -433,10 +469,11 @@ class Widget extends Base {
 
         //加载地图
         let mapImage = await this.loadMapView(`${longitude},${latitude}`, boxWidth, boxHeight);
-        mapImage.opacity = 0.5
+        mapImage.opacity = 0.2
         leftBox.cornerRadius = CORRER_RADIUS
         leftBox.backgroundColor = BACK_COLOR
         leftBox.backgroundImage = mapImage
+        leftBox.backgroundImage.opacity = 0.2
         let weatherData = null;
         //获取天气
         if (WEATHERKEY) {
@@ -463,7 +500,7 @@ class Widget extends Base {
             const temperatureBox = weatherBox.addStack()
             temperatureBox.backgroundColor = mapBackgroundColor
             temperatureBox.cornerRadius = 5
-            temperatureBox.setPadding(0,3,0,3)
+            temperatureBox.setPadding(0, 3, 0, 3)
             const temperatureText = temperatureBox.addText(`${weatherData.minTemperature}/${weatherData.maxTemperature}`)
             //const temperatureText = temperatureBox.addText(`23/33`)
             temperatureText.font = this.provideFont('medium', 12)
@@ -504,7 +541,7 @@ class Widget extends Base {
         locationIcon.tintColor = fontColor
         locationIcon.size = new Size(LOGO_SIZE, LOGO_SIZE)
         const locationText = locationBox.addText(`定位`)
-        locationText.font = this.provideFont('heavy', FONNT_SIZE+2)
+        locationText.font = this.provideFont('heavy', FONNT_SIZE + 2)
         locationText.textColor = fontColor
         this.addFontShadow(locationText)
         locationBox.addSpacer(null)
@@ -613,7 +650,7 @@ class Widget extends Base {
         //地址
         titleBox.addSpacer(6)
         const textText = titleBox.addText(text)
-        textText.font = this.provideFont('heavy', FONNT_SIZE+2)
+        textText.font = this.provideFont('heavy', FONNT_SIZE + 2)
         textText.textColor = fontColor
         this.addFontShadow(textText)
         titleBox.addSpacer(null)
@@ -696,12 +733,12 @@ class Widget extends Base {
         let fontColor = this.getFontColor()
         //上部
         let topBox = w.addStack()
-        topBox.setPadding(padding * 2, padding, padding, padding)
-        topBox = await this.getCarInfo(topBox, data, width, height / 2 - padding * 1.5, padding, fontColor, true);
+        topBox.setPadding(padding, padding, padding, padding)
+        topBox = await this.getCarInfo(topBox, data, width, height / 2 - padding, padding, fontColor, true);
         //下部
         let bottomBox = w.addStack()
-        bottomBox.setPadding(padding, padding, padding * 2, padding)
-        bottomBox = await this.getMapBox(bottomBox, data, width, height / 2 - padding * 1.5, padding, fontColor)
+        bottomBox.setPadding(padding, padding, padding, padding)
+        bottomBox = await this.getMapBox(bottomBox, data, width, height / 2 - padding, padding, fontColor)
         return w;
     }
     //#endregion
@@ -1523,28 +1560,27 @@ class Widget extends Base {
         return await this.getVehicleDetails(accessToken);
     }
 
-    async getNonce () {
+    async getNonce() {
 
         let headers = {
-                'Content-Type': 'application/json',
-              }
+            'Content-Type': 'application/json',
+        }
         let p = {
-                'mobile': this.userConfigData.username,
-                'verify': 'BMW-LINKER偷的一手好代码',
-              }
-        console.log( this.userConfigData.username,)   
+            'mobile': this.userConfigData.username,
+            'verify': 'BMW-LINKER偷的一手好代码',
+        }
+        console.log(this.userConfigData.username,)
         let req = 'http://yymm.huchundong.com:7000/bimmer/getNonce'
-        const res = await this.httpPost(req, headers, JSON.stringify(p))     
+        const res = await this.httpPost(req, headers, JSON.stringify(p))
         console.log('[0+]获取随机秘钥')
         if (res.code === 200) {
-          console.log(res)
-          return res.data
+            console.log(res)
+            return res.data
         } else {
-            console.log('[0-]获取随机秘钥失败')
-          App.error = res.message
-          return null
+            console.log('[0-]获取随机秘钥失败:' + res.message)
+            return null
         }
-      }
+    }
 
     async getPublicKey() {
         let req = BMW_SERVER_HOST + '/eadrax-coas/v1/cop/publickey'
@@ -1562,7 +1598,7 @@ class Widget extends Base {
         let accessToken = '';
         if (Keychain.contains(MY_BMW_TOKEN_UPDATE_LAST_AT)) {
             let lastUpdate = parseInt(Keychain.get(MY_BMW_TOKEN_UPDATE_LAST_AT));
-            if (lastUpdate > new Date().valueOf() - 1000 * 60 * 50) {
+            if (lastUpdate > new Date().valueOf() - 1000 * 60 * 30) {
                 if (Keychain.contains(MY_BMW_TOKEN)) {
                     accessToken = Keychain.get(MY_BMW_TOKEN);
                 }
